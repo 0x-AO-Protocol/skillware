@@ -158,5 +158,5 @@ For questions, suggestions, or contributions, please open an issue or reach out 
 <div align="center">
     <img src="assets/arpalogo.png" alt="ARPA Logo" width="50px" />
     <br/>
-    Built & Maintained by ARPA Hellenic Logical Systems
+    Built & Maintained by ARPA Hellenic Logical Systems & the Community
 </div>
