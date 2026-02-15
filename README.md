@@ -86,12 +86,18 @@ Skillware/
 
 ### 1. Installation
 
-Clone the repository and install the dependencies.
+You can install Skillware directly from GitHub:
 
 ```bash
-git clone https://github.com/arpa/skillware.git
+pip install git+https://github.com/arpahls/skillware.git
+```
+
+Or for development, clone the repository and install in editable mode:
+
+```bash
+git clone https://github.com/arpahls/skillware.git
 cd skillware
-pip install -r requirements.txt
+pip install -e .
 ```
 
 > **Note**: Individual skills may have their own dependencies. The `SkillLoader` validates `manifest.yaml` and warns of missing packages (e.g., `requests`, `pandas`) upon loading a skill.

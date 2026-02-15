@@ -9,7 +9,7 @@ parameters:
       description: Absolute path to the PDF form to fill.
     instructions:
       type: string
-      description: User instructions for filling the form (e.g. "Name: Alice, Age: 30").
+      description: "User instructions for filling the form (e.g. 'Name: Alice, Age: 30')."
     output_path:
       type: string
       description: Optional path to save the filled PDF.
