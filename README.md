@@ -67,11 +67,14 @@ Skillware/
 │           ├── manifest.yaml   # Metadata
 │           ├── instructions.md # Cognitive Map
 │           ├── utils.py        # PDF Processing
+│           └── card.json       # UI Presentation
 ├── templates/                  # New Skill Templates
 │   └── python_skill/           # Standard Python Skill Template
 ├── examples/                   # Reference Implementations
 │   ├── gemini_wallet_check.py  # Google Gemini Integration
-│   └── claude_wallet_check.py  # Anthropic Claude Integration
+│   ├── claude_wallet_check.py  # Anthropic Claude Integration
+│   ├── gemini_pdf_form_filler.py
+│   └── claude_pdf_form_filler.py
 ├── docs/                       # Comprehensive Documentation
 │   ├── introduction.md         # Philosophy & Design
 │   ├── usage/                  # Integration Guides
