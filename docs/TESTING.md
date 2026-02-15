@@ -2,6 +2,14 @@
 
 Skillware maintains high standards for code quality and reliability. Before submitting a Pull Request, please ensure your code passes all linting and testing checks.
 
+## Quick Setup
+
+Install all testing and linting dependencies in one go:
+
+```bash
+pip install -e .[dev]
+```
+
 ## 1. Code Formatting (Black)
 
 We use **Black** as our uncompromising code formatter. It ensures that all code looks the same, regardless of who wrote it, eliminating discussions about style.

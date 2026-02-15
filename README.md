@@ -9,7 +9,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/License-MIT-efcefa?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/Python-3.11+-bae6fd?style=flat-square" alt="Python Version">
-  <img src="https://img.shields.io/badge/PyPI-v0.1.0-bbf7d0?style=flat-square" alt="PyPI Version">
+  <a href="https://pypi.org/project/skillware/"><img src="https://img.shields.io/pypi/v/skillware?style=flat-square&color=bbf7d0" alt="PyPI Version"></a>
 </div>
 
 <br/>
@@ -86,10 +86,10 @@ Skillware/
 
 ### 1. Installation
 
-You can install Skillware directly from GitHub:
+You can install Skillware directly from PyPI:
 
 ```bash
-pip install git+https://github.com/arpahls/skillware.git
+pip install skillware
 ```
 
 Or for development, clone the repository and install in editable mode:
