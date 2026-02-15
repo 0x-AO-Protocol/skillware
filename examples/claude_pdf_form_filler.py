@@ -1,9 +1,5 @@
 import os
-import sys
 import json
-# Add repo root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import anthropic
 from skillware.core.loader import SkillLoader
 from skillware.core.env import load_env_file
@@ -16,7 +12,7 @@ skill_bundle = SkillLoader.load_skill("office/pdf_form_filler")
 print(f"Loaded Skill: {skill_bundle['manifest']['name']}")
 
 # 2. Instantiate Skill
-PDFFormFillerSkill = skill_bundle['module'].PDFFormFillerSkill
+PDFFormFillerSkill = skill_bundle["module"].PDFFormFillerSkill
 pdf_skill = PDFFormFillerSkill()
 
 # 3. Setup Claude Client
@@ -35,10 +31,8 @@ print(f"User: {user_query}")
 message = client.messages.create(
     model="claude-3-opus-20240229",
     max_tokens=1024,
-    system=skill_bundle['instructions'], 
-    messages=[
-        {"role": "user", "content": user_query}
-    ],
+    system=skill_bundle["instructions"],
+    messages=[{"role": "user", "content": user_query}],
     tools=tools,
 )
 
@@ -46,15 +40,17 @@ if message.stop_reason == "tool_use":
     tool_use = next(block for block in message.content if block.type == "tool_use")
     tool_name = tool_use.name
     tool_input = tool_use.input
-    
+
     print(f"\nClaude requested tool: {tool_name}")
     print(f"Input: {tool_input}")
 
     if tool_name == "pdf_form_filler":
         # Check file
-        if not os.path.exists(tool_input.get('pdf_path', '')):
-             print(f"⚠️ Warning: File {tool_input.get('pdf_path')} does not exist. Execution might fail.")
-        
+        if not os.path.exists(tool_input.get("pdf_path", "")):
+            print(
+                f"⚠️ Warning: File {tool_input.get('pdf_path')} does not exist. Execution might fail."
+            )
+
         # Execute
         print("⚙️ Executing skill...")
         try:
@@ -69,7 +65,7 @@ if message.stop_reason == "tool_use":
         response = client.messages.create(
             model="claude-3-opus-20240229",
             max_tokens=1024,
-            system=skill_bundle['instructions'],
+            system=skill_bundle["instructions"],
             tools=tools,
             messages=[
                 {"role": "user", "content": user_query},
@@ -80,12 +76,12 @@ if message.stop_reason == "tool_use":
                         {
                             "type": "tool_result",
                             "tool_use_id": tool_use.id,
-                            "content": json.dumps(result)
+                            "content": json.dumps(result),
                         }
                     ],
                 },
             ],
         )
-        
+
         print("\nAgent Final Response:")
         print(response.content[0].text)
