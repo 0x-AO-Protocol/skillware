@@ -2,7 +2,14 @@
 
 Welcome to the official catalog of Skillware capabilities.
 
-## 💳 Finance & Compliance
+### Office
+Skills for document processing, email automation, and productivity.
+
+| Skill | ID | Description |
+| :--- | :--- | :--- |
+| **[PDF Form Filler](pdf_form_filler.md)** | `office/pdf_form_filler` | Fills AcroForm-based PDFs by mapping user instructions to detected form fields using LLM-based semantic understanding. |
+
+## Finance
 Tools for financial analysis, blockchain interaction, and regulatory compliance.
 
 | Skill | ID | Description |

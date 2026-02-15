@@ -1,0 +1,25 @@
+{
+    "name": "PDF Form Filler",
+    "description": "Smartly fills PDF forms from natural language instructions.",
+    "icon": "document-text",
+    "color": "rose",
+    "ui_schema": {
+        "type": "card",
+        "fields": [
+            {
+                "key": "message",
+                "label": "Status"
+            },
+            {
+                "key": "filled_fields",
+                "label": "Filled Fields",
+                "type": "tags"
+            },
+            {
+                "key": "output_path",
+                "label": "Download",
+                "type": "file_path"
+            }
+        ]
+    }
+}

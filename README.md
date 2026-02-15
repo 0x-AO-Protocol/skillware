@@ -47,7 +47,6 @@ This repository is organized into a core framework, a registry of skills, and do
 
 ```text
 Skillware/
-Skillware/
 ├── skillware/                  # Core Framework Package
 │   └── core/
 │       ├── base_skill.py       # Abstract Base Class for skills
@@ -55,13 +54,19 @@ Skillware/
 │       └── env.py              # Environment Management
 ├── skills/                     # Skill Registry (Domain-driven)
 │   └── finance/
-│       └── wallet_screening/ 
+│       └── wallet_screening/
 │           ├── skill.py        # Logic
 │           ├── manifest.yaml   # Metadata & Constitution
 │           ├── instructions.md # Cognitive Map
 │           ├── card.json       # UI Presentation
 │           ├── data/           # Integrated Knowledge Base
 │           └── maintenance/    # Maintenance Tools
+│   └── office/
+│       └── pdf_form_filler/
+│           ├── skill.py        # Logic
+│           ├── manifest.yaml   # Metadata
+│           ├── instructions.md # Cognitive Map
+│           ├── utils.py        # PDF Processing
 ├── templates/                  # New Skill Templates
 │   └── python_skill/           # Standard Python Skill Template
 ├── examples/                   # Reference Implementations
@@ -152,12 +157,12 @@ Skillware differs from the Model Context Protocol (MCP) or Anthropic's Skills re
 For questions, suggestions, or contributions, please open an issue or reach out to us:
 
 *   **Email**: [skillware-os@arpacorp.net](mailto:skillware-os@arpacorp.net)
-*   **Issues**: [GitHub Issues](https://github.com/arpa/skillware/issues)
+*   **Issues**: [GitHub Issues](https://github.com/arpahls/skillware/issues)
 
 ---
 
 <div align="center">
     <img src="assets/arpalogo.png" alt="ARPA Logo" width="50px" />
     <br/>
-    Built & Maintained by ARPA Hellenic Logical Systems
+    Built & Maintained by ARPA Hellenic Logical Systems & the Community
 </div>
