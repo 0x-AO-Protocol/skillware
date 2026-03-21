@@ -66,3 +66,24 @@ for part in response.parts:
         )
 ```
 *(Note: As of Gemini SDK v0.8+, the exact import for `FunctionResponse` may vary. Using a dictionary structure is often more robust.)*
+
+## 🔗 Skill Chaining (Middleware)
+
+Skillware's modular design allows treating skills as deterministic offline logic blocks. For example, you can seamlessly chain the **Prompt Token Rewriter** to optimize context before hitting the LLM:
+
+```python
+# Load the middleware skill
+rewriter = SkillLoader.load_skill("optimization/prompt_rewriter")
+sys_prompt = "You are a very helpful assistant serving a bank..."
+
+# Use python logic offline before starting the chat session
+optimized_ctx_result = rewriter['module'].PromptRewriter().execute({
+    "raw_text": sys_prompt, 
+    "compression_aggression": "high"
+})
+
+model = genai.GenerativeModel(
+    'gemini-2.5-flash',
+    system_instruction=optimized_ctx_result["compressed_text"]
+)
+```

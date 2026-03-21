@@ -17,6 +17,13 @@ Tools for financial analysis, blockchain interaction, and regulatory compliance.
 | **[Wallet Screening](wallet_screening.md)** | `finance/wallet_screening` | Comprehensive risk assessment for Ethereum wallets. Checks sanctions lists (OFAC, FBI) and identifies interactions with malicious contracts (Mixers, Scams). |
 
 
+## Optimization
+Middleware skills that operate on text or state to increase performance, security, or efficiency.
+
+| Skill | ID | Description |
+| :--- | :--- | :--- |
+| **[Prompt Token Rewriter](prompt_rewriter.md)** | `optimization/prompt_rewriter` | Aggressively compresses massive prompts or context histories while retaining semantic meaning to save tokens. |
+
 ---
 
 ## 📥 Installing Skills
