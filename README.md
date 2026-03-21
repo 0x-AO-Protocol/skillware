@@ -53,10 +53,8 @@ Skillware/
 │       ├── loader.py           # Universal Skill Loader & Model Adapter
 │       └── env.py              # Environment Management
 ├── skills/                     # Skill Registry (Domain-driven)
-│   ├── finance/
-│   │   └── wallet_screening/
-│   └── office/
-│       └── pdf_form_filler/
+│   ├── category/               # e.g., finance, optimization, data_engineering
+│   │   └── skill_name/         # e.g., prompt_rewriter, wallet_screening
 ├── templates/                  # New Skill Templates
 │   └── python_skill/           # Standard Python Skill Template
 ├── examples/                   # Reference Implementations
@@ -109,9 +107,9 @@ from skillware.core.env import load_env_file
 # Load Environment
 load_env_file()
 
-# 1. Load the Skill
+# 1. Load the Skill from the Registry
 # The loader reads the code, manifest, and instructions automatically
-skill_bundle = SkillLoader.load_skill("finance/wallet_screening")
+skill_bundle = SkillLoader.load_skill("category/skill_name")
 
 # 2. Model & Chat Setup
 model = genai.GenerativeModel(
