@@ -3,13 +3,13 @@
 **Domain:** `optimization`
 **Skill ID:** `optimization/prompt_rewriter`
 
-A middleware skill that acts as a powerful compression logic gate for agents. It ingests a massive, bloated prompt or conversation history and "rewrites" it to use fewer tokens while aggressively retaining semantic meaning and core instructions.
+A powerful middleware skill that acts as a deterministic compression logic gate for agents. It ingests a massive, bloated prompt or conversation history and "rewrites" it to use fewer tokens while aggressively retaining 100% of the semantic meaning and instructions.
 
 This is critical for complex agents facing strict token constraints or high LLM API costs.
 
 ## Manifest Details
 
-**Inputs Schema:**
+**Parameters Schema:**
 *   `raw_text` (string): The bloated, repetitive prompt or extensive conversation history to compress.
 *   `compression_aggression` (string): The level of compression: 'low', 'medium', or 'high'.
 
@@ -19,5 +19,30 @@ This is critical for complex agents facing strict token constraints or high LLM 
 *   `new_tokens` (integer): The approximate new length.
 *   `tokens_saved` (integer): The absolute number of tokens removed.
 
-## Usage Guide
-The agent invokes this tool automatically when faced with an excessively long string of context or when instructed to compress a payload. The heuristic removes filler words, repetitive structures, and optionally standardizes whitespace and grammar depending on the specified aggression level.
+## Example Usage (Skill Chaining)
+
+The agent invokes this tool automatically when faced with an excessively long context or when instructed to compress a payload. However, you can also use it as a manual middleware step:
+
+```python
+from skillware.core.loader import SkillLoader
+
+# 1. Load the middleware
+rewriter_bundle = SkillLoader.load_skill("optimization/prompt_rewriter")
+rewriter = rewriter_bundle['module'].PromptRewriter()
+
+# 2. Compress a prompt before sending to LLM
+result = rewriter.execute({
+    "raw_text": "Hello, could you please make sure to read this documentation...",
+    "compression_aggression": "high"
+})
+
+print(f"Compressed: {result['compressed_text']}")
+# Output: "read documentation..."
+```
+
+## Maintenance
+
+To run tests specifically for this skill:
+```bash
+pytest tests/skills/optimization/test_prompt_rewriter.py
+```

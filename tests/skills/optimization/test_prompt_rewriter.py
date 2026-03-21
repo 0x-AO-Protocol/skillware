@@ -1,14 +1,17 @@
 from skillware.core.loader import SkillLoader
 
+
 def get_skill():
     bundle = SkillLoader.load_skill("optimization/prompt_rewriter")
     return bundle['module'].PromptRewriter()
+
 
 def test_manifest_schema():
     skill = get_skill()
     manifest = skill.manifest
     assert manifest.get("name") == "optimization/prompt_rewriter"
     assert manifest.get("version") == "0.1.0"
+
 
 def test_rewriter_execution_low():
     skill = get_skill()
@@ -19,6 +22,7 @@ def test_rewriter_execution_low():
     result = skill.execute(params)
     assert result["compressed_text"] == "This is a very spaced out prompt."
     assert result["original_tokens"] >= result["new_tokens"]
+
 
 def test_rewriter_execution_high():
     skill = get_skill()
@@ -32,6 +36,7 @@ def test_rewriter_execution_high():
     assert result["tokens_saved"] > 0
     assert "new_tokens" in result
     assert "original_tokens" in result
+
 
 def test_empty_string():
     skill = get_skill()

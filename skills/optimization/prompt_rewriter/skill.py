@@ -2,9 +2,10 @@ import re
 from typing import Any, Dict
 from skillware.core.base_skill import BaseSkill
 
+
 class PromptRewriter(BaseSkill):
     """
-    A skill that heuristically compresses a prompt by removing unnecessary whitespace, 
+    A skill that heuristically compresses a prompt by removing unnecessary whitespace,
     low-value words, and optionally trimming grammar.
     """
 
@@ -27,17 +28,20 @@ class PromptRewriter(BaseSkill):
             return {"error": "raw_text cannot be empty."}
 
         original_tokens = self._estimate_tokens(raw_text)
-        
+
         # Level 1: Standardize Whitespace (Low Aggression)
         compressed = re.sub(r'\s+', ' ', raw_text).strip()
-        
+
         # Level 2: Remove Filler Words (Medium Aggression)
         if aggression in ["medium", "high"]:
-            fillers = ["please", "could you", "would you", "kindly", "make sure to", "ensure that", "I want you to", "can you"]
+            fillers = [
+                "please", "could you", "would you", "kindly", "make sure to",
+                "ensure that", "I want you to", "can you"
+            ]
             for filler in fillers:
                 compressed = re.compile(re.escape(filler), re.IGNORECASE).sub("", compressed)
             compressed = re.sub(r'\s+', ' ', compressed).strip()
-            
+
         # Level 3: Intense Vowel/Punctuation Dropping (High Aggression)
         if aggression == "high":
             # Remove non-essential punctuation
