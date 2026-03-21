@@ -16,7 +16,7 @@
 
 <div align="center">
   <a href="#mission">Mission</a> •
-  <a href="#repository-structure">Architecture</a> •
+  <a href="#architecture">Architecture</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#documentation">Documentation</a> •
   <a href="#contributing">Contributing</a> •
@@ -41,7 +41,7 @@ A **Skill** in this framework provides everything an Agent needs to master a dom
 3.  **Governance**: Constitution and safety boundaries.
 4.  **Interface**: Standardized schemas for LLM tool calling.
 
-## Repository Structure
+## Architecture
 
 This repository is organized into a core framework, a registry of skills, and documentation.
 
@@ -53,21 +53,10 @@ Skillware/
 │       ├── loader.py           # Universal Skill Loader & Model Adapter
 │       └── env.py              # Environment Management
 ├── skills/                     # Skill Registry (Domain-driven)
-│   └── finance/
-│       └── wallet_screening/
-│           ├── skill.py        # Logic
-│           ├── manifest.yaml   # Metadata & Constitution
-│           ├── instructions.md # Cognitive Map
-│           ├── card.json       # UI Presentation
-│           ├── data/           # Integrated Knowledge Base
-│           └── maintenance/    # Maintenance Tools
+│   ├── finance/
+│   │   └── wallet_screening/
 │   └── office/
 │       └── pdf_form_filler/
-│           ├── skill.py        # Logic
-│           ├── manifest.yaml   # Metadata
-│           ├── instructions.md # Cognitive Map
-│           ├── utils.py        # PDF Processing
-│           └── card.json       # UI Presentation
 ├── templates/                  # New Skill Templates
 │   └── python_skill/           # Standard Python Skill Template
 ├── examples/                   # Reference Implementations
