@@ -52,11 +52,11 @@ Claude stops generating when it wants to call a tool. You must execute and reply
 ```python
 if message.stop_reason == "tool_use":
     tool_use = next(b for b in message.content if b.type == "tool_use")
-    
+
     # 1. Execute
     print(f"Calling {tool_use.name}...")
     result = my_skill.execute(tool_use.input)
-    
+
     # 2. Reply with Result
     response = client.messages.create(
         model="claude-3-opus-20240229",

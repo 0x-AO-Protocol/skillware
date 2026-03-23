@@ -70,7 +70,7 @@ This is the most critical file. It is the "driver" for the LLM.
     *   **Feature**: Use `[Framework Feature]` for changes to the core engine.
     *   **Bug**: Use `[Bug Report]` for errors.
     *   **RFC**: Use `[Request for Comments]` for major architectural discussions.
-    
+
     [Open a New Issue Here](https://github.com/ARPAHLS/skillware/issues/new/choose) is the first step.
     *Wait for approval/feedback before writing code.*
 2.  **Fork** the repository.

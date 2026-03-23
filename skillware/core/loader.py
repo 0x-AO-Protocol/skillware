@@ -141,15 +141,15 @@ class SkillLoader:
         prompt = f"### Tool: `{name}`\n"
         prompt += f"**Description:** {description}\n"
         prompt += "**Parameters:**\n"
-        
+
         props = parameters.get("properties", {})
         required = parameters.get("required", [])
-        
+
         if not props:
             prompt += "- None\n"
         else:
             for k, v in props.items():
                 req_str = "Required" if k in required else "Optional"
                 prompt += f"- `{k}` ({v.get('type', 'any')}): {v.get('description', '')} [{req_str}]\n"
-        
+
         return prompt

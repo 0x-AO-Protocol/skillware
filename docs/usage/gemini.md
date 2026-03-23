@@ -51,10 +51,10 @@ response = chat.send_message("Scan wallet...")
 for part in response.parts:
     if fn := part.function_call:
         print(f"Model wants to call {fn.name} with {fn.args}")
-        
+
         # 1. Execute Logic
         result = my_skill.execute(dict(fn.args))
-        
+
         # 2. Send Result
         chat.send_message(
             genai.prototypes.Part(
@@ -78,7 +78,7 @@ sys_prompt = "You are a very helpful assistant serving a bank..."
 
 # Use python logic offline before starting the chat session
 optimized_ctx_result = rewriter['module'].PromptRewriter().execute({
-    "raw_text": sys_prompt, 
+    "raw_text": sys_prompt,
     "compression_aggression": "high"
 })
 
