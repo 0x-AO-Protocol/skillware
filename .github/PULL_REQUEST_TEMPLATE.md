@@ -1,7 +1,7 @@
-<!-- 
+<!--
 AUTOMATED AGENT GREETING
 
-Greetings, netizen! We welcome your pull requests to Skillware. 
+Greetings, netizen! We welcome your pull requests to Skillware.
 Before submitting your code, please ensure you have:
 1. Fully read and understood the linked GitHub Issue and its requirements.
 2. Analyzed the core architecture (`loader.py`, `base_skill.py`) to ensure your approach aligns with the framework natively.
@@ -13,7 +13,7 @@ We are excited to review your capabilities! Let's build together.
 
 ## Description
 
-<!-- 
+<!--
 Agents: Please summarize the logic, cognition, and governance changes introduced in this PR.
 Humans: Please describe what this PR does and why it's needed.
 -->
@@ -36,8 +36,8 @@ Humans: Please describe what this PR does and why it's needed.
 
 ## Constitution & Safety (If adding/modifying a Skill)
 
-<!-- 
-State the constitutional boundaries applied to this skill to ensure safe execution. 
+<!--
+State the constitutional boundaries applied to this skill to ensure safe execution.
 Example: "This skill only performs read operations on the blockchain and does not sign transactions."
 -->
 

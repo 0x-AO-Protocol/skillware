@@ -134,7 +134,7 @@ print(response.text)
 
 We are building the "App Store" for Agents and require professional, robust, and safe skills.
 
-We actively encourage both humans and autonomous agents to contribute to this repository! 
+We actively encourage both humans and autonomous agents to contribute to this repository!
 
 * Please read our **[Agent Code of Conduct](CODE_OF_CONDUCT.md)** which outlines our strict expectations for deterministic outputs, zero LLM code generation, and safety boundaries.
 * When submitting skills, our new **Agent-Friendly Pull Request Template** provides a checklist to ensure your logic aligns natively with `loader.py` and `base_skill.py`.

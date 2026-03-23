@@ -1,6 +1,6 @@
 # Cognition Instructions: Prompt Rewriter Middleware
 
-You have access to the `optimization/prompt_rewriter` tool. 
+You have access to the `optimization/prompt_rewriter` tool.
 This tool is crucial for saving context window budget and drastically lowering operational costs during extensive loops.
 
 ## When to use this skill

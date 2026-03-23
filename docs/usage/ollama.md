@@ -18,7 +18,7 @@ Skillware natively supports [Ollama](https://ollama.com/), enabling you to run o
 
 Here is a simple example demonstrating how to load a skill and execute it using a local model running via Ollama.
 
-```python
+````python
 import json
 import re
 import ollama
@@ -78,20 +78,20 @@ if tool_match:
     tool_call = json.loads(tool_match.group(1))
     fn_name = tool_call.get("tool")
     fn_args = tool_call.get("arguments", {})
-    
+
     if fn_name == "finance/wallet_screening":
         print(f"⚙️ Executing skill '{fn_name}' locally...")
         api_result = wallet_skill.execute(fn_args)
-        
+
         # Give result back to model
         messages.append({"role": "assistant", "content": message_content})
         messages.append({
-            "role": "user", 
+            "role": "user",
             "content": f"SYSTEM RESPONSE (Result from {fn_name}):\n```json\n{json.dumps(api_result)}\n```\nPlease continue."
         })
-        
+
         print("\n🤖 Sending tool results back to Agent...")
         final_resp = ollama.chat(model=model_name, messages=messages)
         print("\n💬 Final Answer:")
         print(final_resp.get("message", {}).get("content", ""))
-```
+````
