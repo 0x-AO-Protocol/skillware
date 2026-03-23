@@ -42,7 +42,7 @@ Frameworks like Google DeepMind's **Antigravity** use `SKILL.md` files to provid
 A critical architectural distinction is how Skillware treats logic execution versus "code generation."
 
 *   **The Code-Generation Approach**: Many platforms prompt the LLM to write code on the fly to solve a requested problem. This is expensive (you pay for output tokens every time), slow, and risky (the LLM executes unreviewed code).
-*   **The Skillware Approach**: Skillware relies on **Pre-Compiled Logic**. The LLM decides *which* tool to call (e.g., wallet_screening) and passes arguments. The heavy lifting happens deterministically in the Python `BaseSkill` implementation. This results in **zero-cost logic execution**, instant processing, and static, auditable code boundaries.
+*   **The Skillware Approach**: Skillware relies on **Pre-Compiled Logic**. The logical system decides *which* tool to call (e.g., wallet_screening) and passes arguments. The heavy lifting happens deterministically in the Python `BaseSkill` implementation. This results in **zero-cost logic execution**, instant processing, and static, auditable code boundaries.
 
 ---
 

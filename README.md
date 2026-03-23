@@ -32,7 +32,7 @@
 
 ## Mission
 
-The AI ecosystem is fragmented. Developers often re-invent tool definitions, system prompts, and safety rules for every project. **Skillware** supplies a standard to package capabilities into self-contained units that work across **Gemini**, **Claude**, **GPT**, and **Llama**.
+The AI ecosystem is fragmented. Developers often re-invent tool definitions, system prompts, and safety rules for every project. **Skillware** supplies a standard to package capabilities into self-contained units that work across **Gemini**, **Claude**, **Ollama**, **GPT**, and **Llama**.
 
 A **Skill** in this framework provides everything an Agent needs to master a domain:
 
@@ -127,6 +127,7 @@ print(response.text)
 *   **[Core Logic & Philosophy](docs/introduction.md)**: Details on how Skillware decouples Logic, Cognition, and Governance.
 *   **[Usage Guide: Gemini](docs/usage/gemini.md)**: Integration with Google's GenAI SDK.
 *   **[Usage Guide: Claude](docs/usage/claude.md)**: Integration with Anthropic's SDK.
+*   **[Usage Guide: Ollama](docs/usage/ollama.md)**: Native integration for local models via Ollama.
 *   **[Skill Library](docs/skills/README.md)**: Available capabilities.
 
 ## Contributing
@@ -143,7 +144,7 @@ We actively encourage both humans and autonomous agents to contribute to this re
 
 Skillware differs from the Model Context Protocol (MCP) or Anthropic's Skills repository in the following ways:
 
-*   **Model Agnostic**: Native adapters for Gemini, Claude, and OpenAI.
+*   **Model Agnostic**: Native adapters for Gemini, Claude, Ollama, and OpenAI.
 *   **Code-First**: Skills are executable Python packages, not just server specs.
 *   **Runtime-Focused**: Provides tools for the application, not just recipes for an IDE.
 

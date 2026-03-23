@@ -125,3 +125,31 @@ class SkillLoader:
         parameters = manifest.get("parameters", {})
 
         return {"name": name, "description": description, "input_schema": parameters}
+
+    @staticmethod
+    def to_ollama_prompt(skill_bundle: Dict[str, Any]) -> str:
+        """
+        Converts a skill manifest to a textual description suitable for a system prompt.
+        This allows older models (like Llama 3) running via Ollama without native tool-calling
+        API support to understand and utilize the skill via text generation.
+        """
+        manifest = skill_bundle.get("manifest", {})
+        name = manifest.get("name", "unknown_tool")
+        description = manifest.get("description", "").strip()
+        parameters = manifest.get("parameters", {})
+
+        prompt = f"### Tool: `{name}`\n"
+        prompt += f"**Description:** {description}\n"
+        prompt += "**Parameters:**\n"
+        
+        props = parameters.get("properties", {})
+        required = parameters.get("required", [])
+        
+        if not props:
+            prompt += "- None\n"
+        else:
+            for k, v in props.items():
+                req_str = "Required" if k in required else "Optional"
+                prompt += f"- `{k}` ({v.get('type', 'any')}): {v.get('description', '')} [{req_str}]\n"
+        
+        return prompt
