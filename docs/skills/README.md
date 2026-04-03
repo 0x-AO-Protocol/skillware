@@ -24,6 +24,13 @@ Middleware skills that operate on text or state to increase performance, securit
 | :--- | :--- | :--- |
 | **[Prompt Token Rewriter](prompt_rewriter.md)** | `optimization/prompt_rewriter` | Aggressively compresses massive prompts or context histories while retaining semantic meaning to save tokens. |
 
+## Data Engineering
+Skills tailored for generating, parsing, and orchestrating large datasets for machine learning or analytics workflows.
+
+| Skill | ID | Description |
+| :--- | :--- | :--- |
+| **[Synthetic Data Generator](synthetic_generator.md)** | `data_engineering/synthetic_generator` | Generates high-entropy structured synthetic data for model fine-tuning to avoid mode collapse. |
+
 ---
 
 ## 📥 Installing Skills
