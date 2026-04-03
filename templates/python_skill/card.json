@@ -1,0 +1,15 @@
+{
+    "name": "My Skill",
+    "description": "A template description.",
+    "icon": "zap",
+    "color": "gray",
+    "ui_schema": {
+        "type": "card",
+        "fields": [
+            {
+                "key": "status",
+                "label": "Status"
+            }
+        ]
+    }
+}
