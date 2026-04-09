@@ -31,6 +31,13 @@ Skills tailored for generating, parsing, and orchestrating large datasets for ma
 | :--- | :--- | :--- |
 | **[Synthetic Data Generator](synthetic_generator.md)** | `data_engineering/synthetic_generator` | Generates high-entropy structured synthetic data for model fine-tuning to avoid mode collapse. |
 
+## Compliance
+Enforces privacy, guardrails, and secure handling of sensitive data before it reaches external endpoints.
+
+| Skill | ID | Description |
+| :--- | :--- | :--- |
+| **[PII Masker](pii_masker.md)** | `compliance/pii_masker` | High-precision, local PII (Personally Identifiable Information) detection and redaction using the micro-f1-mask model. |
+
 ---
 
 ## 📥 Installing Skills

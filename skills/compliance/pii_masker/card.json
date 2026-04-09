@@ -1,0 +1,19 @@
+{
+    "name": "PII Masker",
+    "description": "Scrub sensitive PII from text before it hits external logic.",
+    "icon": "shield",
+    "color": "#2E86C1",
+    "ui_schema": {
+        "type": "card",
+        "fields": [
+            {
+                "key": "mode",
+                "label": "Redaction Mode"
+            },
+            {
+                "key": "ollama_url",
+                "label": "Ollama Endpoint"
+            }
+        ]
+    }
+}
