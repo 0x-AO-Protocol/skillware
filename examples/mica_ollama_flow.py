@@ -7,8 +7,8 @@ import ollama
 # Add the parent directory to the path so we can import skillware locally
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from skillware.core.loader import SkillLoader
-from skillware.core.base_skill import BaseSkill
+from skillware.core.loader import SkillLoader  # noqa: E402
+from skillware.core.base_skill import BaseSkill  # noqa: E402
 
 
 def load_skill_instance(path):
@@ -48,7 +48,10 @@ Wait for the response before making your final compliant determination.
 """
 
     model_name = "llama3"
-    user_query = "What are the rules for a company wanting to be authorized as a crypto-asset service provider (CASP) in the EU?"
+    user_query = (
+        "What are the rules for a company wanting to be authorized as a crypto-asset service provider "
+        "(CASP) in the EU?"
+    )
 
     print(f"\n[User]: {user_query}")
     print("-" * 50)
@@ -96,7 +99,10 @@ Wait for the response before making your final compliant determination.
                 print(f" > Articles found: {', '.join(sections[:3])}...")
 
                 # Feedback loop
-                result_msg = f"SYSTEM RESPONSE (Source Articles):\n{result.get('final_context_for_agent', '')}\n\nPlease generate your final authorized response."
+                result_msg = (
+                    f"SYSTEM RESPONSE (Source Articles):\n{result.get('final_context_for_agent', '')}\n\n"
+                    "Please generate your final authorized response."
+                )
                 messages.append({"role": "user", "content": result_msg})
             else:
                 # No more tool calls, done

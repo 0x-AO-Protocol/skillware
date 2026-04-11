@@ -86,7 +86,10 @@ Wait for the response before making your final compliant determination.
                 print(f" > Articles found: {', '.join(sections)}")
 
                 # Feedback loop
-                result_msg = f"SYSTEM RESPONSE (Source Articles):\n{result.get('final_context_for_agent', '')}\n\nPlease generate your final authorized response."
+                result_msg = (
+                    f"SYSTEM RESPONSE (Source Articles):\n{result.get('final_context_for_agent', '')}\n\n"
+                    "Please generate your final authorized response."
+                )
             else:
                 # No more tool calls, done
                 print("\n\n(Scenario Complete)")

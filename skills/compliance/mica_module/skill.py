@@ -64,14 +64,19 @@ class MiCAModuleSkill(BaseSkill):
         policy_status = "CAUTION"
         gemini_feedback = {
             "grade": "N/A",
-            "holes_found": "Evaluator disabled. Review MiCA context manually for regulatory holes.",
+            "holes_found": (
+                "Evaluator disabled. Review MiCA context manually for regulatory holes."
+            ),
             "suggestion": "Follow the integrated MiCA chunks exactly.",
         }
 
         if not retrieved_sections:
             final_context = "No specific MiCA articles matched the user query."
         else:
-            final_context = f"Output your final answer seamlessly integrating and adhering to these MiCA rules:\n{context_text}"
+            final_context = (
+                "Output your final answer seamlessly integrating and adhering to "
+                f"these MiCA rules:\n{context_text}"
+            )
 
         # 4. Optional Evaluator Node execution
         if run_evaluator and relevant_chunks:
@@ -180,13 +185,14 @@ class MiCAModuleSkill(BaseSkill):
         self, prompt: str, context: str, model_name: str
     ) -> Dict[str, Any]:
         prompt_payload = f"""
-        You are a MiCA Regulation Evaluator. 
+        You are a MiCA Regulation Evaluator.
         User Query: {prompt}
         MiCA Rule Context from RAG: {context}
 
         Draft a response silently to see what an AI would say based on the user query.
-        Then, evaluate that draft against the MiCA rules to see if it violates anything or misses vital compliance disclosures (like publishing a White Paper, authorization required, etc).
-        
+        Then, evaluate that draft against the MiCA rules to see if it violates
+        anything or misses vital compliance disclosures (like publishing a
+        White Paper, authorization required, etc).
         Return exactly a JSON summarizing the grade and issues found.
         Schema:
         {{
@@ -217,5 +223,7 @@ class MiCAModuleSkill(BaseSkill):
                     "holes_found": f"Evaluator API failed or rate-limited: {str(e)}",
                     "suggestion": "Proceed manually integrating the extracted logic.",
                 },
-                "final_context_for_agent": f"Output your final answer seamlessly integrating and adhering to these MiCA rules:\n{context}",
+                "final_context_for_agent": (
+                    f"Output your final answer seamlessly integrating and adhering to these MiCA rules:\n{context}"
+                ),
             }

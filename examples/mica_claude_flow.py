@@ -40,7 +40,10 @@ To get MiCA context, output exactly a JSON block like this:
 Wait for the system response before providing your final answer.
 """
 
-    user_query = "What are the authorization requirements for a company wanting to be a CASP under MiCA? Please cite Articles 59-63."
+    user_query = (
+        "What are the authorization requirements for a company wanting to be a CASP under MiCA? "
+        "Please cite Articles 59-63."
+    )
     model_name = "claude-3-haiku-20240307"
 
     print(f"\n[User]: {user_query}")
@@ -86,7 +89,10 @@ Wait for the system response before providing your final answer.
                 print(f" > Articles found: {', '.join(sections)}")
 
                 # Feedback loop
-                result_msg = f"SYSTEM RESPONSE (Source Articles):\n{result.get('final_context_for_agent', '')}\n\nPlease generate your final authorized response."
+                result_msg = (
+                    f"SYSTEM RESPONSE (Source Articles):\n{result.get('final_context_for_agent', '')}\n\n"
+                    "Please generate your final authorized response."
+                )
                 messages.append({"role": "user", "content": result_msg})
             else:
                 # No more tool calls, done
