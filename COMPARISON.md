@@ -2,7 +2,7 @@
 
 Skillware is a Python framework that decouples AI tool logic, cognition, and governance into self-contained, installable modules called **Skills**.
 
-This document clarifies how Skillware compares to other common approaches for equipping AI agents with tools, specifically focusing on **Model Context Protocol (MCP)**, **Anthropic Skills**, and **Antigravity Skills**.
+This document clarifies how Skillware compares to other common approaches for equipping AI agents with tools, including **Model Context Protocol (MCP)**, **Anthropic Skills**, **LangChain Tools**, **AutoGen**, and others.
 
 ---
 
@@ -37,6 +37,44 @@ Frameworks like Google DeepMind's **Antigravity** use `SKILL.md` files to provid
 
 ---
 
+## 4. Skillware vs. LangChain Tools
+
+[LangChain Tools](https://python.langchain.com/docs/modules/tools/) provide interfaces that chains and agents use to interact with external APIs and systems.
+
+### Key Differences
+*   **Beyond Execution Wrappers**: LangChain tools frequently act as simple execution wrappers around an API. Skillware focuses on **uncoupled runtime logic, cognition maps, and system governance**. A Skillware module doesn't just contain the code to execute a task; it includes standard instructions on *how* the agent should reason about the tool (`instructions.md`) and strict safety guardrails (`manifest.yaml`).
+*   **Code-First, Framework-Agnostic**: LangChain tools are tightly coupled to the LangChain ecosystem. Skillware's code-first structure and universal adapters let you seamlessly inject skills into *any* minimal pipeline orchestrating Gemini, Claude, or OpenAI. You do not have to adopt an entire heavyweight orchestration ecosystem to use a Skillware module.
+
+---
+
+## 5. Skillware vs. AutoGen
+
+[Microsoft AutoGen](https://microsoft.github.io/autogen/) is a framework for developing applications using multiple conversing agents.
+
+### Key Differences
+*   **Installable Capabilities vs. Internal Management**: In AutoGen, tool and skill management is typically handled internally by registering custom Python functions to specific agents. Skillware treats skills as **installable capabilities**—like `apt-get` for agents. Rather than coding functions from scratch, a developer can download a pre-vetted, domain-specific Skillware module and equip an AutoGen agent instantly.
+*   **Separation of Concerns**: AutoGen focuses on multi-agent *orchestration* and conversation patterns. Skillware focuses purely on standardizing *domain expertise*. In fact, Skillware can be used *inside* AutoGen to provide its agents with standalone, secure, and pre-compiled capabilities.
+
+---
+
+## 6. Skillware vs. Microsoft Semantic Kernel (Plugins)
+
+[Semantic Kernel](https://learn.microsoft.com/en-us/semantic-kernel/) is an enterprise SDK that integrates LLMs with code using a system of "Plugins," which is philosophically similar to Skillware.
+
+### Key Differences
+*   **Lightweight vs. Heavyweight**: Semantic Kernel is a complete, heavy enterprise orchestration layer that requires adopting its entire C#/Python architectural paradigm and pipeline management. Skillware is intentionally minimal. It simply provides the capability bundle, enabling you to use it in lightweight 10-line Python scripts or custom agent loops without needing an enterprise orchestrator.
+
+---
+
+## 7. Skillware vs. CrewAI
+
+[CrewAI](https://www.crewai.com/) is a popular framework for orchestrating role-playing autonomous agents to accomplish tasks.
+
+### Key Differences
+*   **The Orchestrator vs. The Supply Chain**: Developers often confuse agent orchestration frameworks with capability frameworks. CrewAI excels at defining *roles* and managing *handoffs* between agents, but the tools those agents use are often simple script-bound Python functions. Skillware does not compete with CrewAI; rather, it acts as the supply chain. You use CrewAI to orchestrate your multi-agent workflow, and you use Skillware to supply those agents with robust, vetted, and cleanly separated capabilities.
+
+---
+
 ## The Token Economy Advantage
 
 A critical architectural distinction is how Skillware treats logic execution versus "code generation."
@@ -48,9 +86,9 @@ A critical architectural distinction is how Skillware treats logic execution ver
 
 ## Executive Summary Matrix
 
-| Feature | Skillware | Model Context Protocol (MCP) | Anthropic Skills | Antigravity Skills |
-| :--- | :--- | :--- | :--- | :--- |
-| **Primary Goal** | **Installable App Capabilities** | **Standardized Tool Integration** | Claude Capabilities Showcase | **Developer Agent Guidance** |
-| **Architecture** | **Native Python Library** | **Client-Server (JSON-RPC)** | Standalone Scripts | Markdown Context Files |
-| **Model Compatibility** | **Universal** (Adapters built-in) | Standardized Protocol Clients | Claude Specific | Context injection |
-| **Execution Context** | **Runtime Application** | Distributed / Networked | Runtime Application | IDE / Build Environment |
+| Feature | Skillware | Model Context Protocol (MCP) | Anthropic Skills | Antigravity Skills | LangChain Tools | AutoGen & CrewAI | Semantic Kernel |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Primary Goal** | **Installable App Capabilities** | **Standardized Tool Integration** | Claude Capabilities Showcase | **Developer Agent Guidance** | **Chain / Execution Wrappers** | **Multi-Agent Orchestration** | **Enterprise Orchestration** |
+| **Architecture** | **Native Python Library** | **Client-Server (JSON-RPC)** | Standalone Scripts | Markdown Context Files | Python/JS Components | Python Framework | Enterprise SDK |
+| **Model Compatibility** | **Universal** (Adapters built-in) | Standardized Protocol Clients | Claude Specific | Context injection | Broad via Ecosystem | Broad | Broad via Connectors |
+| **Execution Context** | **Runtime Application** | Distributed / Networked | Runtime Application | IDE / Build Environment | LangChain Pipeline | Agent Workflows | Enterprise Service |
