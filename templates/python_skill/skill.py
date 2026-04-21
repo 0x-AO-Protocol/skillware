@@ -6,7 +6,7 @@ class MyAwesomeSkill(BaseSkill):
     @property
     def manifest(self) -> Dict[str, Any]:
         """
-        Returns the skill's manifest. In a production skill, 
+        Returns the skill's manifest. In a production skill,
         you can load this from manifest.yaml using SkillLoader.
         """
         return {
@@ -21,7 +21,7 @@ class MyAwesomeSkill(BaseSkill):
         Expects 'param1' in params as defined in manifest.yaml.
         """
         param1 = params.get("param1", "default")
-        
+
         # Implement your logic here
-        
+
         return {"result": f"Executed with {param1}"}
