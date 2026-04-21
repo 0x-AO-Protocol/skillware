@@ -126,6 +126,7 @@ print(response.text)
 ## Documentation
 
 *   **[Core Logic & Philosophy](docs/introduction.md)**: Details on how Skillware decouples Logic, Cognition, and Governance.
+*   **[Testing Guidelines](docs/TESTING.md)**: Instructions for validating skills and checking local coverage.
 *   **[Usage Guide: Gemini](docs/usage/gemini.md)**: Integration with Google's GenAI SDK.
 *   **[Usage Guide: Claude](docs/usage/claude.md)**: Integration with Anthropic's SDK.
 *   **[Usage Guide: Ollama](docs/usage/ollama.md)**: Native integration for local models via Ollama.
