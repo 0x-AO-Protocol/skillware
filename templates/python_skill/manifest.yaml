@@ -2,14 +2,22 @@ name: "my-awesome-skill"
 version: "0.1.0"
 description: "A short description of what this skill does."
 category: "utility"
-inputs:
-  param1:
-    type: "string"
-    description: "Description of the first parameter"
+parameters:
+  type: object
+  properties:
+    param1:
+      type: string
+      description: "Description of the first parameter"
+  required:
+    - param1
 outputs:
   result:
-    type: "string"
+    type: string
     description: "Description of the output"
+requirements: []
+constitution: |
+  1. Always provide helpful and accurate results.
+  2. Do not include sensitive information in the output.
 presentation:
   icon: "star"
   color: "#3498DB"

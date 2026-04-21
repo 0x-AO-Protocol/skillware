@@ -75,13 +75,12 @@ This is the most critical file. It is the "driver" for the LLM.
     *Wait for approval/feedback before writing code.*
 2.  **Fork** the repository.
 3.  **Create** your skill folder: `skills/<category>/<your_skill>/`.
-4.  **Implement** the 4 required files (`manifest.yaml`, `skill.py`, `instructions.md`, `card.json`).
-5.  **Add** a test script in `examples/`.
-6.  **Verify**: Run linting and tests. See [TESTING.md](docs/TESTING.md) for details.
+4.  **Implement** the 5 required files (`manifest.yaml`, `skill.py`, `instructions.md`, `card.json`, `test_skill.py`).
+5.  **Verify**: Run linting and tests locally.
+    *   `pytest skills/<category>/<your_skill>/test_skill.py`
     *   `python -m black .`
     *   `python -m flake8 .`
-    *   `python -m pytest tests/`
-7.  **Submit** PR.
+6.  **Submit** PR.
 
 ---
 
