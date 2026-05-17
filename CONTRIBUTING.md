@@ -2,7 +2,7 @@
 
 Welcome to Skillware. We are building an open registry of modular, deterministic agent capabilities—skills that any compatible runtime can load. Most contributors add or improve **skills**, but documentation, framework fixes, tests, and good first issues are equally welcome.
 
-This document is the single entry point for how to contribute. For a step-by-step workflow when using AI coding assistants, see **[AI-Native Contribution Workflow](docs/contributing/ai_native_workflow.md)**.
+This document is the single entry point for how to contribute. If you are an **AI agent** working on this repository, read **[Agent Contribution Workflow](docs/contributing/ai_native_workflow.md)** first. Human operators may use the same guide to supervise agent work.
 
 ---
 
@@ -116,9 +116,9 @@ Follow the [Agent Code of Conduct](CODE_OF_CONDUCT.md): deterministic skill outp
 
 Use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md). Complete the **New or updated skill** section only when this PR adds or changes files under `skills/`.
 
-### AI-assisted work
+### AI agents and operators
 
-If you use coding assistants, follow [AI-Native Contribution Workflow](docs/contributing/ai_native_workflow.md): analyze and approve a plan first, implement second, verify before push. You remain responsible for the diff.
+Agents must follow [Agent Contribution Workflow](docs/contributing/ai_native_workflow.md). Human operators: approve the agent's plan before implementation, verify tests, and own the fork, commit, and PR. The operator remains responsible for the merged diff.
 
 ---
 
@@ -294,7 +294,7 @@ Skill IDs follow `category/skill_name` and should match the path under `skills/`
 
 | Document | Purpose |
 | :--- | :--- |
-| [AI-Native Contribution Workflow](docs/contributing/ai_native_workflow.md) | Human-in-the-loop workflow for AI-assisted contributions |
+| [Agent Contribution Workflow](docs/contributing/ai_native_workflow.md) | Workflow written for contributing agents; operators supervise |
 | [TESTING.md](docs/TESTING.md) | Black, Flake8, Pytest, local CI parity |
 | [Agent Code of Conduct](CODE_OF_CONDUCT.md) | Behavioral expectations for humans and agents |
 | [docs/introduction.md](docs/introduction.md) | Architecture: Mind, Body, Conscience |
