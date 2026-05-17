@@ -26,14 +26,15 @@ The system instructions emphasize boundary-pushing data generation. It prohibits
 
 ## Integration Guide
 
-### Environment Variables
-Depending on the requested `model_provider`, ensure you have the necessary API key exported:
+### Environment
 
-```bash
-ANTHROPIC_API_KEY="sk-ant-..."
-GOOGLE_API_KEY="AIzaSy..."
-# Or run an Ollama server locally on default port 11434
-```
+| Variable | Required | Purpose |
+| :--- | :--- | :--- |
+| `GOOGLE_API_KEY` | When `model_provider` is `gemini` | Google Generative AI for generation |
+| `ANTHROPIC_API_KEY` | When `model_provider` is `anthropic` | Anthropic API for generation |
+| (none) | When `model_provider` is `ollama` | Uses local Ollama on the default port |
+
+Configure values per [API keys for skills](../usage/api_keys.md).
 
 ### Usage (Skillware Loader)
 

@@ -43,6 +43,14 @@ A local-first compliance guardrail that checks whether an intended automated act
 * `CAUTION`: the site may allow access, but only with conditions such as API usage, permission, or strict rate limits.
 * `INSUFFICIENT_EVIDENCE`: the evaluator could not find enough trustworthy evidence to safely approve the action.
 
+## Environment
+
+| Variable | Required | Purpose |
+| :--- | :--- | :--- |
+| `GOOGLE_API_KEY` | No | Optional LLM clause evaluator when `use_llm_evaluator` is enabled with a Gemini provider |
+
+Configure values per [API keys for skills](../usage/api_keys.md). The core policy checks do not require a cloud API key.
+
 ## Example Usage (Direct)
 
 ```python

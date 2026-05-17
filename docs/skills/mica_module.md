@@ -26,6 +26,14 @@ The system prompt teaches the main Agent to:
 *   **In-Memory Caching**: The 1MB corpus is cached on the first run, delivering subsequent RAG lookups in **~1.7ms**.
 *   **Weighted Surgical Router**: Instead of a "shotgun" match, the router uses a weighted scoring system (Mentions > Keywords > collisions) and throttles retrieval to the **Top 10** most relevant Articles to prevent context window asphyxiation.
 
+## Environment
+
+| Variable | Required | Purpose |
+| :--- | :--- | :--- |
+| `GOOGLE_API_KEY` | Yes (evaluator / Gemini paths) | Google Generative AI used by the built-in evaluator and RAG flows |
+
+Configure values per [API keys for skills](../usage/api_keys.md).
+
 ## Integration & Configuration
 
 This skill is designed for high-performance agentic loops without relying on opaque native tool APIs. 

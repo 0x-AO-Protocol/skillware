@@ -30,12 +30,13 @@ The system prompt teaches the internal mapping engine to:
 
 ## 💻 Integration Guide
 
-### Environment Variables
-You must provide an Anthropic API key for the semantic mapping engine.
+### Environment
 
-```bash
-ANTHROPIC_API_KEY="sk-ant-..."
-```
+| Variable | Required | Purpose |
+| :--- | :--- | :--- |
+| `ANTHROPIC_API_KEY` | Yes | Claude API for semantic field mapping |
+
+Configure values per [API keys for skills](../usage/api_keys.md).
 
 ### Usage (Skillware Loader)
 

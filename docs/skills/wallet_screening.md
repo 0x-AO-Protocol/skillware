@@ -44,12 +44,16 @@ Tools to keep the knowledge fresh.
 
 ## 💻 Integration Guide
 
-### Environment Variables
-You must provide an Etherscan API key.
+### Environment
 
-```bash
-ETHERSCAN_API_KEY="your_key_here"
-```
+| Variable | Required | Purpose |
+| :--- | :--- | :--- |
+| `ETHERSCAN_API_KEY` | Yes | Etherscan API for transaction history |
+| `COINGECKO_API_KEY` | No | CoinGecko pricing (free tier if unset) |
+
+Configure values per [API keys for skills](../usage/api_keys.md). This skill reads the names declared in `skills/finance/wallet_screening/manifest.yaml`.
+
+For Gemini agent loops that invoke this skill, you also need `GOOGLE_API_KEY` in your environment (see [Gemini usage](../usage/gemini.md)).
 
 ### Usage (Gemini 2.0)
 

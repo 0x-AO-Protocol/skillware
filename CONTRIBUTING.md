@@ -173,7 +173,7 @@ Defines the tool interface, safety constitution, dependencies, and issuer attrib
 
 **Optional but common:**
 
-- `env_vars` — API keys and configuration (never hardcode secrets in `skill.py`)
+- `env_vars` — API keys and configuration (never hardcode secrets in `skill.py`); document the same names on the skill catalog page and link to [API keys for skills](docs/usage/api_keys.md)
 - `category`, `outputs`, `presentation` — when they clarify the skill contract
 
 **Example:**
@@ -234,6 +234,7 @@ The primary guide for the host LLM.
 - Human-readable documentation linked from the [Skill Library](docs/skills/README.md).
 - Include **ID** and **Issuer** near the top (for example linked GitHub handle and optional org).
 - Describe capabilities, prerequisites, arguments, and limitations.
+- If the skill calls external services, list its environment variables in a short table and link to [API keys for skills](docs/usage/api_keys.md). Do not duplicate the full setup guide on the skill page.
 
 ### 7. Registry index row
 
@@ -294,6 +295,7 @@ Skill IDs follow `category/skill_name` and should match the path under `skills/`
 
 | Document | Purpose |
 | :--- | :--- |
+| [API keys for skills](docs/usage/api_keys.md) | Configuring credentials for skills that call external services |
 | [Agent Contribution Workflow](docs/contributing/ai_native_workflow.md) | Workflow written for contributing agents; operators supervise |
 | [TESTING.md](docs/TESTING.md) | Black, Flake8, Pytest, local CI parity |
 | [Agent Code of Conduct](CODE_OF_CONDUCT.md) | Behavioral expectations for humans and agents |

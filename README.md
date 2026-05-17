@@ -130,6 +130,7 @@ print(response.text)
 *   **[Usage Guide: Gemini](docs/usage/gemini.md)**: Integration with Google's GenAI SDK.
 *   **[Usage Guide: Claude](docs/usage/claude.md)**: Integration with Anthropic's SDK.
 *   **[Usage Guide: Ollama](docs/usage/ollama.md)**: Native integration for local models via Ollama.
+*   **[API Keys for Skills](docs/usage/api_keys.md)**: Environment variables, cloud/CI setup, and security for skills that call external APIs.
 *   **[Skill Library](docs/skills/README.md)**: Available capabilities.
 
 ## Contributing
