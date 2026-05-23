@@ -1,23 +1,55 @@
 # Integration Guide: Google Gemini
 
-Skillware provides first-class support for Google's Gemini models via the `google-generativeai` SDK.
+Skillware provides first-class support for Google's Gemini models via the `google-genai` SDK.
 
 ## ⚡ Quick Snippet
 
 ```python
+import os
 from skillware.core.loader import SkillLoader
-import google.generativeai as genai
+import google.genai as genai
+from google.genai import types
 
 # Load & Convert
 skill = SkillLoader.load_skill("finance/wallet_screening")
+skill_instance = skill["module"].WalletScreeningSkill(
+    config={"ETHERSCAN_API_KEY": os.environ.get("ETHERSCAN_API_KEY")}
+)
 tool = SkillLoader.to_gemini_tool(skill)
 
-# Initialize
-model = genai.GenerativeModel(
-    'gemini-2.0-flash-exp',
-    tools=[tool],
-    system_instruction=skill['instructions']
+# Initialize the google-genai client
+client = genai.Client()
+
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Screen wallet 0xd8dA... for risks.",
+    config=types.GenerateContentConfig(
+        tools=[tool],
+        system_instruction=skill["instructions"],
+    ),
 )
+for part in response.candidates[0].content.parts:
+    if part.function_call:
+        result = skill_instance.execute(dict(part.function_call.args))
+        follow_up = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                "Use this tool result to answer the original request.",
+                {
+                    "function_response": {
+                        "name": part.function_call.name,
+                        "response": {"result": result},
+                    }
+                },
+            ],
+            config=types.GenerateContentConfig(
+                tools=[tool],
+                system_instruction=skill["instructions"],
+            ),
+        )
+        print(follow_up.text)
+    else:
+        print(part.text)
 ```
 
 ## 🔍 How It Works
@@ -36,36 +68,44 @@ Gemini 1.5+ supports `system_instruction`. Skillware leverages this to inject th
 This is crucial. Without `system_instruction`, the model knows it *has* a tool, but it doesn't know the nuanced strategy of *when* to use it. By injecting the instructions, you effectively fine-tune the model's behavior for that specific capability during the session.
 
 ### 3. Function Calling Loop
-Gemini supports `enable_automatic_function_calling=True`.
-
-*   **Automatic**: The SDK handles the loop. It calls your python function and sends the result back.
-*   **Manual**: You receive a `Part` with `function_call`. You must execute the logic and send back a `FunctionResponse`.
+The `google-genai` SDK returns model parts that can include `function_call` requests.
+In a manual Skillware loop, execute the matching local skill with `skill.execute(dict(part.function_call.args))`, then send a `function_response` back to Gemini so the model can produce the final answer.
+If you use an automatic-calling helper in your own app, keep the same boundary: Skillware executes locally, and the tool result is returned to the model before you show a final response.
 
 ## 🛠️ Advanced: Manual Execution Loop
 
 If you need granular control (e.g., to sanitize inputs or show progress bars), use the manual loop:
 
 ```python
-response = chat.send_message("Scan wallet...")
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Scan wallet 0xd8dA... for risks.",
+    config=types.GenerateContentConfig(
+        tools=[tool],
+        system_instruction=skill["instructions"],
+    ),
+)
 
-for part in response.parts:
+for part in response.candidates[0].content.parts:
     if fn := part.function_call:
         print(f"Model wants to call {fn.name} with {fn.args}")
 
         # 1. Execute Logic
-        result = my_skill.execute(dict(fn.args))
+        result = skill_instance.execute(dict(fn.args))
 
         # 2. Send Result
-        chat.send_message(
-            genai.prototypes.Part(
-                function_response=genai.prototypes.FunctionResponse(
-                    name=fn.name,
-                    response={'result': result}
-                )
-            )
+        follow_up = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                "Use this tool result to answer the original request.",
+                {"function_response": {"name": fn.name, "response": {"result": result}}},
+            ],
+            config=types.GenerateContentConfig(
+                tools=[tool],
+                system_instruction=skill["instructions"],
+            ),
         )
 ```
-*(Note: As of Gemini SDK v0.8+, the exact import for `FunctionResponse` may vary. Using a dictionary structure is often more robust.)*
 
 ## 🔗 Skill Chaining (Middleware)
 
@@ -82,8 +122,11 @@ optimized_ctx_result = rewriter['module'].PromptRewriter().execute({
     "compression_aggression": "high"
 })
 
-model = genai.GenerativeModel(
-    'gemini-2.5-flash',
-    system_instruction=optimized_ctx_result["compressed_text"]
+response = client.models.generate_content(
+    model='gemini-2.5-flash',
+    contents="Summarize the optimized context.",
+    config=types.GenerateContentConfig(
+        system_instruction=optimized_ctx_result["compressed_text"],
+    ),
 )
 ```

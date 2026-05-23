@@ -46,20 +46,44 @@ print(result["compressed_text"])
 
 ```python
 import os
-import google.generativeai as genai
+import google.genai as genai
+from google.genai import types
 from skillware.core.env import load_env_file
 from skillware.core.loader import SkillLoader
 
 load_env_file()
 bundle = SkillLoader.load_skill("optimization/prompt_rewriter")
 skill = bundle["module"].PromptRewriter()
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
-model = genai.GenerativeModel(
-    "gemini-2.5-flash",
-    tools=[SkillLoader.to_gemini_tool(bundle)],
-    system_instruction=bundle["instructions"],
+client = genai.Client()
+tool = SkillLoader.to_gemini_tool(bundle)
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Rewrite this support prompt for a concise, policy-safe assistant.",
+    config=types.GenerateContentConfig(
+        tools=[tool],
+        system_instruction=bundle["instructions"],
+    ),
 )
-# On function_call (name optimization/prompt_rewriter): skill.execute(dict(part.function_call.args))
+for part in response.candidates[0].content.parts:
+    if part.function_call:
+        result = skill.execute(dict(part.function_call.args))
+        follow_up = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                "Use this tool result to answer the original request.",
+                {
+                    "function_response": {
+                        "name": part.function_call.name,
+                        "response": {"result": result},
+                    }
+                },
+            ],
+            config=types.GenerateContentConfig(
+                tools=[tool],
+                system_instruction=bundle["instructions"],
+            ),
+        )
+        print(follow_up.text)
 ```
 
 ### Claude

@@ -72,7 +72,8 @@ Sample user message: *Screen wallet `0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045`
 
 ```python
 import os
-import google.generativeai as genai
+import google.genai as genai
+from google.genai import types
 from skillware.core.env import load_env_file
 from skillware.core.loader import SkillLoader
 
@@ -81,13 +82,36 @@ bundle = SkillLoader.load_skill("finance/wallet_screening")
 skill = bundle["module"].WalletScreeningSkill(
     config={"ETHERSCAN_API_KEY": os.environ.get("ETHERSCAN_API_KEY")}
 )
-genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-model = genai.GenerativeModel(
-    "gemini-2.5-flash",
-    tools=[SkillLoader.to_gemini_tool(bundle)],
-    system_instruction=bundle["instructions"],
+client = genai.Client()
+tool = SkillLoader.to_gemini_tool(bundle)
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Screen wallet 0xd8dA... for sanctions and malicious contract interactions.",
+    config=types.GenerateContentConfig(
+        tools=[tool],
+        system_instruction=bundle["instructions"],
+    ),
 )
-# On function_call (name wallet_screening): skill.execute(dict(part.function_call.args))
+for part in response.candidates[0].content.parts:
+    if part.function_call:
+        result = skill.execute(dict(part.function_call.args))
+        follow_up = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                "Use this tool result to answer the original request.",
+                {
+                    "function_response": {
+                        "name": part.function_call.name,
+                        "response": {"result": result},
+                    }
+                },
+            ],
+            config=types.GenerateContentConfig(
+                tools=[tool],
+                system_instruction=bundle["instructions"],
+            ),
+        )
+        print(follow_up.text)
 ```
 
 ### Claude
