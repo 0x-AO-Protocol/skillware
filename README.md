@@ -43,7 +43,7 @@ A **Skill** in this framework provides everything an Agent needs to master a dom
 
 ### Skill library
 
-Browse capabilities by category in the [Skill library](docs/skills/README.md) — `compliance/`, `data_engineering/`, `dev_tools/`, `finance/`, `office/`, and `optimization/`.
+Browse capabilities by category in the [Skill library](docs/skills/README.md).
 
 ## Architecture
 
