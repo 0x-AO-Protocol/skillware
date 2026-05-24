@@ -47,7 +47,9 @@ Browse capabilities by category in the [Skill library](docs/skills/README.md).
 
 ## Architecture
 
-This repository is organized into a core framework, a registry of skills, and documentation.
+This repository is organized into a core framework, a registry of skills, and
+documentation. Runnable provider scripts are indexed in
+[examples/README.md](examples/README.md).
 
 ```text
 Skillware/
@@ -179,6 +181,7 @@ For other providers and shared integration patterns, see the [usage guides index
 | Testing | [docs/TESTING.md](docs/TESTING.md) |
 | Skill library | [docs/skills/README.md](docs/skills/README.md) |
 | Usage guides | [index](docs/usage/README.md) — [Gemini](docs/usage/gemini.md) · [Claude](docs/usage/claude.md) · [OpenAI](docs/usage/openai.md) · [DeepSeek](docs/usage/deepseek.md) · [Ollama](docs/usage/ollama.md); [agent loops](docs/usage/agent_loops.md); [API keys](docs/usage/api_keys.md) |
+| Examples index | [examples/README.md](examples/README.md) |
 | CLI | [docs/usage/cli.md](docs/usage/cli.md) |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) · [agent workflow](docs/contributing/ai_native_workflow.md) |
 
