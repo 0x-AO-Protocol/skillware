@@ -1,0 +1,75 @@
+name: wellness/mental_coach
+version: 0.1.0
+description: >
+  Grounded mental wellness coaching skill with embedded regulatory and clinical
+  guardrails. Retrieves citeable guidance from an internal knowledge base,
+  enforces hard constraints, and triages crisis signals before the parent agent
+  responds. Co-authored by Ross Peili (vpeilivanidis@gmail.com) and Mr. Masa
+  (masa88keith@gmail.com).
+short_description: "Grounded wellness coaching with crisis triage and regulatory guardrails."
+issuer:
+  name: Ross Peili, Mr. Masa
+  email: vpeilivanidis@gmail.com, masa88keith@gmail.com
+  github: rosspeili, mrmasa88
+  org: AO Protocol
+category: wellness
+parameters:
+  type: object
+  properties:
+    user_prompt:
+      type: string
+      description: The user's message or coaching request.
+    user_jurisdiction:
+      type: string
+      description: >
+        Optional jurisdiction hint for retrieval filtering (e.g. US, EU, UK,
+        GLOBAL, unknown). Defaults to unknown.
+    session_mode:
+      type: string
+      description: >
+        coaching (default), information, or crisis_check. Influences retrieval
+        focus and disclaimers.
+    run_evaluator:
+      type: boolean
+      description: >
+        If true, runs an optional LLM scope audit against retrieved guidance.
+        Adds a secondary API call when configured.
+    evaluator_model:
+      type: string
+      description: >
+        Optional model for the evaluator node (default gemini-2.5-flash-lite).
+    max_chunks:
+      type: integer
+      description: Maximum knowledge-base chunks to retrieve (default 8, max 15).
+  required:
+    - user_prompt
+outputs:
+  policy_status:
+    type: string
+    description: BLOCKED, ESCALATE, CAUTION, or APPROVED.
+  scope:
+    type: string
+    description: coaching scope assigned for this turn.
+  final_context_for_agent:
+    type: string
+    description: Grounded instructions and citations for the parent agent.
+requirements:
+  - pyyaml
+env_vars:
+  - GOOGLE_API_KEY
+constitution: |
+  1. SCOPE: Provide supportive coaching and psychoeducation only. Never diagnose,
+     prescribe medication, or interpret clinical tests.
+  2. GROUNDING: Base guidance strictly on retrieved knowledge-base chunks. Do not
+     invent clinical or legal claims.
+  3. CRISIS: If crisis signals are detected, stop coaching and return escalation
+     guidance immediately. Never minimize self-harm or abuse disclosures.
+  4. PRIVACY: Minimize collection of health-related personal data. Do not request
+     unnecessary identifiers. Treat user content as sensitive.
+  5. DISCLAIMERS: Always include required disclaimers. This skill is not emergency
+     services, telehealth, or a substitute for licensed professional care.
+  6. COMPLIANCE: Apply HIPAA- and GDPR-aligned guardrails from the embedded corpus.
+     Deployment compliance remains the operator's responsibility.
+presentation:
+  icon: heart
+  color: "#6C5CE7"

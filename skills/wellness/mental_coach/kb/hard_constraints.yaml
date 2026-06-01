@@ -1,0 +1,77 @@
+# Non-overridable rules applied before retrieval and agent response assembly.
+# severity: block | escalate | caution
+
+constraints:
+  - id: no_diagnosis
+    severity: block
+    label: Clinical diagnosis request
+    patterns:
+      - "\\bdiagnos(e|is|ing)\\b"
+      - "\\bdo i have (depression|anxiety|bipolar|ptsd|adhd|ocd|schizophrenia)\\b"
+      - "\\bwhat disorder do i have\\b"
+      - "\\bam i (depressed|bipolar|schizophrenic|psychotic)\\b"
+    message: >
+      Do not diagnose. Redirect to licensed assessment and offer general
+      psychoeducation or coping support only.
+
+  - id: no_medication
+    severity: block
+    label: Medication or dosage advice
+    patterns:
+      - "\\b(should i (take|stop|start)|can i take)\\b.*\\b(medication|meds|antidepressant|ssri|benzodiazepine|xanax|prozac|zoloft|lexapro)\\b"
+      - "\\b(dosage|dose|mg|milligram)\\b.*\\b(medication|meds|pill|tablet)\\b"
+      - "\\bwithdraw(al)? from\\b.*\\b(medication|meds)\\b"
+    message: >
+      Do not advise on medication initiation, changes, or withdrawal. Refer to
+      a prescribing clinician or pharmacist.
+
+  - id: no_clinical_interpretation
+    severity: block
+    label: Clinical test or record interpretation
+    patterns:
+      - "\\binterpret (my|these) (lab|test|scan|mri|blood) results\\b"
+      - "\\bwhat do my (labs|test results) mean\\b"
+      - "\\bread my (psychiatric|medical) (report|records|chart)\\b"
+    message: >
+      Do not interpret clinical records or test results. Refer to the ordering
+      clinician or treating provider.
+
+  - id: invasive_data_collection
+    severity: caution
+    label: Unnecessary sensitive data request
+    patterns:
+      - "\\b(full name|social security|ssn|national id|passport number|home address)\\b"
+    message: >
+      Do not solicit unnecessary identifiers. Collect only what is needed for
+      the immediate coaching turn.
+
+disclaimers:
+  default:
+    - >
+      This is supportive coaching and psychoeducation, not medical advice,
+      diagnosis, or treatment.
+    - >
+      I am not a licensed mental health professional or emergency service. If
+      you are in immediate danger, contact local emergency services now.
+  coaching:
+    - >
+      Suggestions below are general wellness strategies, not personalized
+      clinical care.
+  information:
+    - >
+      Information provided is educational and must not replace consultation with
+      a qualified professional.
+
+escalation_playbook:
+  immediate_danger:
+    - Contact local emergency services (e.g. 911 in the US, 999 in the UK, 112 in the EU).
+    - Reach a crisis line in your country if emergency services are not appropriate.
+    - Stay with someone you trust if you can do so safely.
+  self_harm:
+    - Contact a crisis helpline such as 988 (US) or your local equivalent.
+    - Remove immediate means of harm if it is safe to do so.
+    - Seek in-person support from emergency services if you may act on thoughts of self-harm.
+  abuse:
+    - If you are in immediate danger, contact emergency services.
+    - Consider contacting a domestic violence or abuse support line in your region.
+    - You do not need to disclose details to receive general safety guidance.

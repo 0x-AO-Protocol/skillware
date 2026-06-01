@@ -1,0 +1,29 @@
+{
+    "name": "Mental Coach",
+    "description": "Grounded wellness coaching with crisis triage, hard constraints, and embedded regulatory guidance.",
+    "issuer": {
+        "name": "Ross Peili, Mr. Masa",
+        "email": "vpeilivanidis@gmail.com, masa88keith@gmail.com",
+        "github": "rosspeili, mrmasa88",
+        "org": "AO Protocol"
+    },
+    "icon": "heart",
+    "color": "#6C5CE7",
+    "ui_schema": {
+        "type": "card",
+        "fields": [
+            {
+                "key": "session_mode",
+                "label": "Session Mode"
+            },
+            {
+                "key": "user_jurisdiction",
+                "label": "Jurisdiction"
+            },
+            {
+                "key": "run_evaluator",
+                "label": "Run Scope Evaluator"
+            }
+        ]
+    }
+}

@@ -35,6 +35,7 @@ with editable install: `pip install -e ".[gemini]"`.
 | `ollama_skills_test.py` | `finance/wallet_screening`, `office/pdf_form_filler`, `optimization/prompt_rewriter` | Ollama | `[office]`; install `ollama` separately | `ETHERSCAN_API_KEY`, `ANTHROPIC_API_KEY` | Loads multiple skills and tests prompt-mode tool calling with Ollama. |
 | `ollama_tos_evaluator.py` | `compliance/tos_evaluator` | Ollama | No Skillware extra; install `ollama` separately | None | Runs the terms-of-service evaluator with local Ollama prompt-mode calls. |
 | `openai_tos_evaluator.py` | `compliance/tos_evaluator` | OpenAI | `[openai]` | `OPENAI_API_KEY` | Runs the terms-of-service evaluator with OpenAI function calling. |
+| `mental_coach_demo.py` | `wellness/mental_coach` | Local execute | base install only | None | Demonstrates coaching, crisis escalation, and blocked clinical requests via direct `execute()`. |
 | `pii_guardrail_flow.py` | `compliance/pii_masker` | Local execute | base install only | None | Demonstrates local PII masking before passing text to an external agent. |
 | `prompt_compression_demo.py` | `optimization/prompt_rewriter` | Local execute | base install only | None | Demonstrates prompt compression without a provider loop. |
 | `novelty_extractor_demo.py` | `data_engineering/novelty_extractor` | Local execute | `pip install fastembed numpy` | None | Demonstrates multi-turn corpus distillation using local embeddings with no API key. |

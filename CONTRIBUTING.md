@@ -276,6 +276,7 @@ Place each skill under one top-level directory under `skills/`. Use an existing 
 | Category | Purpose | Examples in registry |
 | :--- | :--- | :--- |
 | `compliance` | Privacy, policy, regulatory guardrails | `pii_masker`, `mica_module`, `tos_evaluator` |
+| `wellness` | Coaching, wellbeing, mental health guardrails | `mental_coach` |
 | `data_engineering` | Datasets, generation, ETL-style tooling | `synthetic_generator` |
 | `finance` | Blockchain, risk, financial analysis | `wallet_screening` |
 | `office` | Documents, productivity | `pdf_form_filler` |

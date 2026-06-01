@@ -8,6 +8,8 @@ Contributors add user-facing entries under `[Unreleased]` in the same PR. Mainta
 
 ## [Unreleased]
 
+### Added
+- **`wellness/mental_coach`**: Self-contained wellness coaching skill with embedded knowledge base, crisis triage, hard constraints, jurisdiction-aware retrieval, and optional Gemini scope evaluator (AO Protocol).
 ## [0.3.3] - 2026-05-29
 
 ### Added
