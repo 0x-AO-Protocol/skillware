@@ -70,6 +70,16 @@ LOCAL_EXECUTE_SMOKE_SCRIPTS: List[Tuple[str, List[str]]] = [
         ],
     ),
     (
+        "business_diagnostic_demo.py",
+        [
+            "monitoring/business_diagnostic",
+            "model_implied",
+            "brier:",
+            "fail-closed",
+            "Demo complete.",
+        ],
+    ),
+    (
         "token_limiter_loop.py",
         [
             "Simulating a runaway scrape task",

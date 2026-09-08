@@ -155,6 +155,7 @@ skills in one harness.
 | `defi/evm_tx_handler` | - | `gemini_evm_tx_handler.py` | `claude_evm_tx_handler.py` | - | - | - |
 | `monitoring/token_limiter` | `token_limiter_loop.py` (local execute) | `gemini_token_limiter.py`, `skill_context_gemini_loop.py` (multi-skill) | `claude_token_limiter.py` | (catalog page) | (catalog page) | (catalog page) |
 | `monitoring/kpi_gate` | `kpi_gate_demo.py` (local execute) | (catalog page) | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
+| `monitoring/business_diagnostic` | `business_diagnostic_demo.py` (local execute) | (catalog page) | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
 | `finance/uk_companies_house_handler` | `uk_companies_house_handler_demo.py` | `gemini_uk_companies_house_handler.py` | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
 
 ### UK Companies House Handler — pipeline and composites (v2b)
