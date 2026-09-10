@@ -141,14 +141,14 @@ def test_install_extras_guide_matches_pyproject():
     parsed = _parse_toml_lists(_generated_section())
     skill_reqs = collect_skill_requirements(SKILLS_ROOT)
 
-    category_section = _section_between(content, "## Category extras", "## Skill extras")
+    category_section = _section_between(
+        content, "## Category extras", "## Skill extras"
+    )
     for row in _parse_markdown_table(category_section)[1:]:
         category = _parse_backtick_list(row[0])[0]
         documented = set(_parse_backtick_list(row[1]))
         expected = {
-            skill_id
-            for skill_id in skill_reqs
-            if skill_id.startswith(f"{category}/")
+            skill_id for skill_id in skill_reqs if skill_id.startswith(f"{category}/")
         }
         assert documented == expected, (
             f"Category {category!r} skills in install_extras.md "
@@ -163,7 +163,9 @@ def test_install_extras_guide_matches_pyproject():
     skill_table = _parse_install_extras_skill_table(content)
     for skill_id in skill_reqs:
         extra = registry_id_to_extra(skill_id)
-        assert extra in skill_table, f"Missing skill extra row {extra!r} in install_extras.md"
+        assert (
+            extra in skill_table
+        ), f"Missing skill extra row {extra!r} in install_extras.md"
         documented_id, documented_pkgs = skill_table[extra]
         assert documented_id == skill_id
         assert set(documented_pkgs) == set(parsed[extra]), (
@@ -174,9 +176,9 @@ def test_install_extras_guide_matches_pyproject():
     for extra_name, (registry_id, _) in skill_table.items():
         if extra_name in DOCUMENTED_OPTIONAL_EXTRAS:
             continue
-        assert registry_id in skill_reqs, (
-            f"Orphan extra row {extra_name!r} in install_extras.md"
-        )
+        assert (
+            registry_id in skill_reqs
+        ), f"Orphan extra row {extra_name!r} in install_extras.md"
         assert extra_name == registry_id_to_extra(registry_id)
 
     meta_section = content.split("## Meta extras", 1)[1].split(

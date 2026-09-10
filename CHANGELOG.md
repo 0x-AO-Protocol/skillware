@@ -15,6 +15,10 @@ Contributors add user-facing entries under `[Unreleased]` in the same PR. Mainta
 - **Skill (`data_engineering/semantic_web_proxy` v0.1.0):** Semantic web proxy that reduces a live page or raw HTML to token-efficient Markdown, plain text, or JSON via trafilatura — boilerplate, script, and navigation stripping, opt-in comment threads, document metadata, estimated token savings with optional context-window share, an SSRF guard that re-validates every redirect hop, and a `page_likely_requires_javascript` warning instead of a silently empty payload for client-rendered pages (#42).
 - **Examples:** [`semantic_web_proxy_demo.py`](examples/semantic_web_proxy_demo.py) — offline fixture-backed demo of boilerplate stripping, comment inclusion, the render warning, and the SSRF guard (#42).
 
+### Fixed
+
+- **CI:** Format `tests/test_extras_sync.py` with Black after the install-extras guard landed (#340 follow-up).
+
 ### Changed
 
 - **Docs (`install_extras.md`):** Backfill `deck_builder`, `gmail_handler`, and `[all]` package rows; add CI guard comparing the install guide to `pyproject.toml` optional-dependencies.
