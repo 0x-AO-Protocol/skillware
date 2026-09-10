@@ -226,7 +226,7 @@ config = types.GenerateContentConfig(
 
 def run_tool_call(user_message, show):
     response = client.models.generate_content(
-        model="gemini-2.5-flash-lite", contents=user_message, config=config
+        model="gemini-3.5-flash-lite", contents=user_message, config=config
     )
     for part in response.candidates[0].content.parts:
         if part.function_call:
