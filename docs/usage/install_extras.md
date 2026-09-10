@@ -69,13 +69,13 @@ Union of non-core `requirements` from every skill in the category.
 | Extra | Skills | Packages installed |
 | :--- | :--- | :--- |
 | `compliance` | `compliance/mica_module`, `compliance/pii_masker`, `compliance/tos_evaluator` | `google-genai` |
-| `creative` | `creative/bg_remover` | `rembg`, `pillow`, `onnxruntime` |
-| `data_engineering` | `data_engineering/novelty_extractor`, `data_engineering/synthetic_generator` | `fastembed`, `numpy` |
+| `creative` | `creative/bg_remover`, `creative/deck_builder` | `onnxruntime`, `pillow`, `python-pptx>=1.0.0`, `rembg>=2.0.0` |
+| `data_engineering` | `data_engineering/novelty_extractor`, `data_engineering/semantic_web_proxy`, `data_engineering/synthetic_generator` | `fastembed`, `numpy`, `trafilatura>=2.0.0` |
 | `defi` | `defi/evm_tx_handler` | `web3>=6.0.0` |
 | `dev_tools` | `dev_tools/issue_resolver` | *(none today)* |
 | `finance` | `finance/uk_companies_house_handler`, `finance/wallet_screening` | *(none today)* |
 | `monitoring` | `monitoring/token_limiter`, `monitoring/kpi_gate`, `monitoring/business_diagnostic` | *(none today)* |
-| `office` | `office/pdf_form_filler` | `anthropic`, `pymupdf` |
+| `office` | `office/gmail_handler`, `office/pdf_form_filler` | `anthropic`, `pymupdf` |
 | `optimization` | `optimization/prompt_rewriter` | *(none today)* |
 | `security` | `security/deceptive_ui_guard`, `security/prompt_injection_firewall` | *(none today)* |
 | `wellness` | `wellness/mental_coach` | `google-genai` |
@@ -95,9 +95,11 @@ One extra per bundled registry skill. Naming: `{category}_{skill_name}` (registr
 | `compliance_mica_module` | `compliance/mica_module` | `google-genai` | |
 | `compliance_pii_masker` | `compliance/pii_masker` | *(none today)* | Use this extra in docs and installs |
 | `compliance_tos_evaluator` | `compliance/tos_evaluator` | *(none today)* | Use this extra in docs and installs |
-| `creative_bg_remover` | `creative/bg_remover` | `rembg`, `pillow`, `onnxruntime` | |
+| `creative_bg_remover` | `creative/bg_remover` | `rembg>=2.0.0`, `pillow`, `onnxruntime` | |
 | `creative_deck_builder` | `creative/deck_builder` | `python-pptx>=1.0.0`, `pillow` | Editable PowerPoint presentation assembly |
 | `data_engineering_novelty_extractor` | `data_engineering/novelty_extractor` | `fastembed`, `numpy` | |
+| `data_engineering_semantic_web_proxy` | `data_engineering/semantic_web_proxy` | `trafilatura>=2.0.0` | |
+| `data_engineering_semantic_web_proxy_tokenizer` | `data_engineering/semantic_web_proxy` | `tiktoken` | Optional exact `cl100k_base` token counts; without it the skill falls back to its offline heuristic |
 | `data_engineering_synthetic_generator` | `data_engineering/synthetic_generator` | *(none today)* | Use this extra in docs and installs |
 | `defi_evm_tx_handler` | `defi/evm_tx_handler` | `web3>=6.0.0` | |
 | `dev_tools_issue_resolver` | `dev_tools/issue_resolver` | *(none today)* | Use this extra in docs and installs |
@@ -106,6 +108,7 @@ One extra per bundled registry skill. Naming: `{category}_{skill_name}` (registr
 | `monitoring_token_limiter` | `monitoring/token_limiter` | *(none today)* | Use this extra in docs and installs |
 | `monitoring_kpi_gate` | `monitoring/kpi_gate` | *(none today)* | Use this extra in docs and installs |
 | `monitoring_business_diagnostic` | `monitoring/business_diagnostic` | *(none today)* | Use this extra in docs and installs |
+| `office_gmail_handler` | `office/gmail_handler` | *(none today)* | Use this extra in docs and installs |
 | `office_pdf_form_filler` | `office/pdf_form_filler` | `pymupdf`, `anthropic` | |
 | `optimization_prompt_rewriter` | `optimization/prompt_rewriter` | *(none today)* | Use this extra in docs and installs |
 | `security_prompt_injection_firewall` | `security/prompt_injection_firewall` | *(none today)* | Offline-only; no runtime deps |
@@ -123,7 +126,7 @@ Empty extras (`[]`) are intentional — always use the per-skill extra in docume
 
 | Extra | Purpose | Packages |
 | :--- | :--- | :--- |
-| `all` | Deduped union of **all** bundled skill runtime deps (non-core) | `anthropic`, `fastembed`, `google-genai`, `numpy`, `onnxruntime`, `pillow`, `pymupdf`, `rembg`, `web3>=6.0.0` |
+| `all` | Deduped union of **all** bundled skill runtime deps (non-core) | `anthropic`, `fastembed`, `google-genai`, `numpy`, `onnxruntime`, `pillow`, `pymupdf`, `python-pptx>=1.0.0`, `rembg>=2.0.0`, `trafilatura>=2.0.0`, `web3>=6.0.0` |
 | `agents` | Union of all agent SDK extras | `google-genai`, `anthropic`, `openai` |
 | `dev` | Clone-repo lint and test tools | `pytest`, `pytest-mock`, `flake8`, `black` |
 

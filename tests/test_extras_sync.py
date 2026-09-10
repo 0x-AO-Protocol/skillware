@@ -19,6 +19,15 @@ from skillware.core.extras import (
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PYPROJECT = REPO_ROOT / "pyproject.toml"
 SKILLS_ROOT = REPO_ROOT / "skills"
+INSTALL_EXTRAS = REPO_ROOT / "docs" / "usage" / "install_extras.md"
+
+# Optional lanes documented in install_extras.md but not generated from manifests.
+DOCUMENTED_OPTIONAL_EXTRAS = frozenset(
+    {
+        "security_deceptive_ui_guard_render",
+        "data_engineering_semantic_web_proxy_tokenizer",
+    }
+)
 
 
 def _generated_section() -> str:
@@ -82,6 +91,109 @@ def test_all_extra_matches_union():
     parsed = _parse_toml_lists(_generated_section())
     expected = build_extras_map(SKILLS_ROOT)["all"]
     assert parsed["all"] == expected
+
+
+def _section_between(content: str, start: str, end: str) -> str:
+    _, rest = content.split(start, 1)
+    section, _ = rest.split(end, 1)
+    return section
+
+
+def _parse_backtick_list(cell: str) -> list[str]:
+    return re.findall(r"`([^`]+)`", cell)
+
+
+def _parse_packages_cell(cell: str) -> list[str]:
+    if "none today" in cell.lower():
+        return []
+    items = _parse_backtick_list(cell)
+    if items:
+        return items
+    return [part.strip() for part in cell.split(",") if part.strip()]
+
+
+def _parse_markdown_table(section: str) -> list[list[str]]:
+    rows: list[list[str]] = []
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|") or stripped.startswith("| :"):
+            continue
+        rows.append([cell.strip() for cell in stripped.strip("|").split("|")])
+    return rows
+
+
+def _parse_install_extras_skill_table(
+    content: str,
+) -> dict[str, tuple[str, list[str]]]:
+    section = _section_between(content, "## Skill extras", "## Meta extras")
+    result: dict[str, tuple[str, list[str]]] = {}
+    for row in _parse_markdown_table(section)[1:]:
+        extra_name = _parse_backtick_list(row[0])[0]
+        registry_id = _parse_backtick_list(row[1])[0]
+        packages = _parse_packages_cell(row[2])
+        result[extra_name] = (registry_id, packages)
+    return result
+
+
+def test_install_extras_guide_matches_pyproject():
+    """Hand-maintained install_extras.md tables match generated pyproject extras."""
+    content = INSTALL_EXTRAS.read_text(encoding="utf-8")
+    parsed = _parse_toml_lists(_generated_section())
+    skill_reqs = collect_skill_requirements(SKILLS_ROOT)
+
+    category_section = _section_between(
+        content, "## Category extras", "## Skill extras"
+    )
+    for row in _parse_markdown_table(category_section)[1:]:
+        category = _parse_backtick_list(row[0])[0]
+        documented = set(_parse_backtick_list(row[1]))
+        expected = {
+            skill_id for skill_id in skill_reqs if skill_id.startswith(f"{category}/")
+        }
+        assert documented == expected, (
+            f"Category {category!r} skills in install_extras.md "
+            f"({sorted(documented)}) != expected ({sorted(expected)})"
+        )
+        documented_pkgs = set(_parse_packages_cell(row[2]))
+        assert documented_pkgs == set(parsed[category]), (
+            f"Category {category!r} packages in install_extras.md "
+            f"({sorted(documented_pkgs)}) != pyproject ({sorted(parsed[category])})"
+        )
+
+    skill_table = _parse_install_extras_skill_table(content)
+    for skill_id in skill_reqs:
+        extra = registry_id_to_extra(skill_id)
+        assert (
+            extra in skill_table
+        ), f"Missing skill extra row {extra!r} in install_extras.md"
+        documented_id, documented_pkgs = skill_table[extra]
+        assert documented_id == skill_id
+        assert set(documented_pkgs) == set(parsed[extra]), (
+            f"{extra} packages in install_extras.md "
+            f"({documented_pkgs}) != pyproject ({parsed[extra]})"
+        )
+
+    for extra_name, (registry_id, _) in skill_table.items():
+        if extra_name in DOCUMENTED_OPTIONAL_EXTRAS:
+            continue
+        assert (
+            registry_id in skill_reqs
+        ), f"Orphan extra row {extra_name!r} in install_extras.md"
+        assert extra_name == registry_id_to_extra(registry_id)
+
+    meta_section = content.split("## Meta extras", 1)[1].split(
+        "## Agent SDK extras", 1
+    )[0]
+    for row in _parse_markdown_table(meta_section)[1:]:
+        if _parse_backtick_list(row[0]) == ["all"]:
+            documented_all = set(_parse_packages_cell(row[2]))
+            assert documented_all == set(parsed["all"]), (
+                "Meta [all] packages in install_extras.md "
+                f"({sorted(documented_all)}) != pyproject ({sorted(parsed['all'])})"
+            )
+            break
+    else:
+        raise AssertionError("Meta extras table missing [all] row")
 
 
 def test_sync_extras_check_script():

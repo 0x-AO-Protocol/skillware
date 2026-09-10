@@ -19,7 +19,7 @@ Tests fall into four layers: **bundle**, **framework**, **maintainer**, and **ex
 | Registry identity guard (`test_registry_identity.py`) | Done |
 | GitHub label policy test (`test_github_labels.py`) | Done |
 | PyPI wheel packaging smoke test (`scripts/wheel_smoke_test.py`) | Done |
-| Optional extras sync (`scripts/sync_extras.py`, `tests/test_extras_sync.py`) | Done |
+| Optional extras sync (`scripts/sync_extras.py`, `tests/test_extras_sync.py`; includes `install_extras.md` table guard) | Done |
 | Card UI schema vs execute output (`tests/test_card_ui_schema.py`) | Done |
 | Local-execute example smoke tests in CI (`tests/test_examples_smoke.py`) | Done |
 | Framework tests isolated from operator global config (`tests/conftest.py`, #302) | Done |
@@ -185,7 +185,7 @@ That covers **skill bundle tests** under `skills/` and **framework + maintainer 
 
 Pushes to `main` that touch `.github/labels.json` also run [`.github/workflows/sync-labels.yml`](../../.github/workflows/sync-labels.yml) to upsert GitHub labels from the JSON file.
 
-The `[all]` extra includes registry skill runtime deps only (`web3`, `fastembed`, `numpy`, …) so `pytest skills/` works after `pip install -e ".[dev,all]"`. When a skill adds new `manifest.yaml` `requirements`, run `python scripts/sync_extras.py` to regenerate category, skill, and `[all]` rows in `pyproject.toml` (see [Install extras](usage/install_extras.md)).
+The `[all]` extra includes registry skill runtime deps only (`web3`, `fastembed`, `numpy`, …) so `pytest skills/` works after `pip install -e ".[dev,all]"`. When a skill adds new `manifest.yaml` `requirements`, run `python scripts/sync_extras.py` to regenerate category, skill, and `[all]` rows in `pyproject.toml`, then update the hand-maintained tables in [Install extras](usage/install_extras.md) — `tests/test_extras_sync.py::test_install_extras_guide_matches_pyproject` fails if those tables drift from `pyproject.toml`.
 
 ### Local commands
 

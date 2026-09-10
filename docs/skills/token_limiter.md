@@ -61,8 +61,8 @@ Indicative USD rates live in `skills/monitoring/token_limiter/data/model_pricing
 | `gpt-4o-mini` | 0.15 | 0.60 |
 | `claude-3-5-sonnet-latest` | 3.00 | 15.00 |
 | `claude-3-5-haiku-latest` | 0.80 | 4.00 |
-| `gemini-2.5-flash` | 0.15 | 0.60 |
-| `gemini-2.5-flash-lite` | 0.075 | 0.30 |
+| `gemini-3.5-flash` | 1.50 | 9.00 |
+| `gemini-3.5-flash-lite` | 0.30 | 2.50 |
 | `deepseek-chat` | 0.27 | 1.10 |
 | Unknown models | Fallback blended 5.00 USD / 1M | |
 
@@ -119,7 +119,7 @@ skill = bundle["class"]()
 client = genai.Client()
 gemini_tool = SkillLoader.to_gemini_tool(bundle)
 response = client.models.generate_content(
-    model="gemini-2.5-flash-lite",
+    model="gemini-3.5-flash-lite",
     contents=(
         "Check task scrape_amazon_listings_101: 125000 tokens used, limit 100000."
     ),
@@ -277,6 +277,7 @@ Commits that touched this skill bundle or its catalog page ([`monitoring/token_l
 
 | Commit | Description | Date | Version | Contributors |
 | :--- | :--- | :--- | :--- | :--- |
+| [`525ecd0`](https://github.com/ARPAHLS/skillware/commit/525ecd01967080bc9631a04395ade9b80c3403d4) | docs: migrate Gemini defaults to 3.5 Flash / Flash-Lite — `model_pricing.json` (#265) (#345) | 9 Sep 2026 | `1.0.0` | [@rosspeili](https://github.com/rosspeili) |
 | [`12fbd1a`](https://github.com/ARPAHLS/skillware/commit/12fbd1a11bdf66250008afc59df7048935eafc73) | docs: adopt Skill anatomy vocabulary on catalog page (#319) | 1 Sep 2026 | `1.0.0` | [@rosspeili](https://github.com/rosspeili) |
 | [`bca8181`](https://github.com/ARPAHLS/skillware/commit/bca8181) | Add category and per-skill pip extras with manifest sync (#236). (#256) | 16 Jul 2026 | `1.0.0` | [@rosspeili](https://github.com/rosspeili) |
 | [`4814478`](https://github.com/ARPAHLS/skillware/commit/4814478) | Fix: to_gemini_tool to return types.Tool object. Fixes #223 (#229) | 10 Jul 2026 | `1.0.0` | [@Areen-09](https://github.com/Areen-09) |

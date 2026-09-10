@@ -339,7 +339,7 @@ Registry skills are shipped inside the `skillware` wheel. Per-skill layout uses 
 - List runtime packages in the skill's `manifest.yaml` `requirements` (source of truth for loaders and docs).
 - **Unpinned** entries (for example `requests`) — loader checks the importable module exists.
 - **Pinned** entries (for example `rembg>=2.0.0`) — loader also verifies the installed distribution satisfies the specifier before `skill.py` runs. Pin when API or behavior breaks across versions; unpinned is fine for stable deps.
-- Run `python scripts/sync_extras.py` after changing manifests — it regenerates category, per-skill, and `[all]` rows in `pyproject.toml` (see [Install extras](docs/usage/install_extras.md)).
+- Run `python scripts/sync_extras.py` after changing manifests — it regenerates category, per-skill, and `[all]` rows in `pyproject.toml`. Update the hand-maintained tables in [Install extras](docs/usage/install_extras.md) in the same PR; CI guards them via `tests/test_extras_sync.py::test_install_extras_guide_matches_pyproject`.
 - Core already includes `requests`, `pyyaml`, and `beautifulsoup4` (manifests may say `bs4`); the sync script omits core packages from extras automatically.
 - Hand-maintained extras (`dev`, `gemini`, `claude`, `openai`, `agents`) stay above the generated block in `pyproject.toml`.
 - Contributors and CI install skill runtime deps with `pip install -e ".[dev,all]"`; add `[agents]` when running SDK examples locally.
