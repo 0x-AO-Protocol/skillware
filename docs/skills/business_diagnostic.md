@@ -40,9 +40,10 @@ Where [`monitoring/kpi_gate`](kpi_gate.md) answers "did this period breach a rul
 
 - Observation signal `o_i`: `yes` → +1, `no` → −1, unobserved → 0.
 - For each scenario *s*: `logit(p_s') = logit(p_s) + Σ_i w_{i,s} · o_i`, where `w_{i,s}` is `indicators[i].strengthens[s]` (undeclared → 0).
-- `exhaustive: true` → divide every `p_s'` by their sum; `false` → independent update.
+- Weights: an indicator observed `yes` adds +w to every scenario listed in its `strengthens`, `no` adds −w; scenarios not listed get 0; indicators without an observation contribute 0 — nothing is imputed.
+- `exhaustive: true` → divide every `p_s'` by their sum. With `exhaustive: false` each scenario updates independently and model-implied values may not sum to 1. Example (the end-to-end framework and marks, `I01` observed `yes`, `exhaustive: false`): A 0.324 (+0.174), B 0.332 (−0.118), C 0.300 (0.000), D 0.100 (0.000), sum 1.056.
 - `model_implied` and `delta` are rounded to 3 decimals after normalization.
-- `Brier = Σ_s (p_s − y_s)²` with `y_s = 1` for the resolved scenario, 3 decimals; `brier_trend` scores each `marks_history` set in ascending `marked_on` order.
+- Multi-class Brier: `Σ_s (p_s − y_s)²` with one-hot `y` (1 for the resolved scenario, 0 otherwise), 3 decimals; `brier_trend` scores each `marks_history` set in ascending `marked_on` order.
 
 ## Validation order (fail-closed, deterministic)
 
@@ -130,31 +131,75 @@ Guides: [Usage index](../usage/README.md) · [Agent loops](../usage/agent_loops.
 
 Use `bundle["class"]()` in the snippets below; explicit `bundle["module"].BusinessDiagnosticSkill()` also works.
 
-Sample user message: *Update the launch scenario ledger with this week's observation and tell me which way the balance moved.*
+Sample user messages: *Update the launch scenario ledger with this week's observation and tell me which way the balance moved.* — then, after resolution — *The outcome is in: scenario B resolved on 2027-12-31. Score the marks and the earlier mark sets.*
 
-The provider snippets share this compact two-scenario setup:
+The provider snippets share this setup (the same values as the bundle's end-to-end fixtures and `kb/demo_scenarios.json`):
 
 ```python
+AS_OF = "2026-09-02"
 FRAMEWORK = {
     "schema_version": 1,
-    "framework_id": "launch_demo",
+    "framework_id": "demo_launch_2026",
     "adjudication_date": "2027-12-31",
     "exhaustive": True,
     "scenarios": [
-        {"id": "A", "label": "launch", "criterion": "Launch before the adjudication date."},
-        {"id": "B", "label": "no launch", "criterion": "No launch before the adjudication date."},
+        {"id": "A", "label": "wired launch", "criterion": "Product launches through an existing partner channel before the adjudication date."},
+        {"id": "B", "label": "branded launch", "criterion": "Product launches under its own brand before the adjudication date."},
+        {"id": "C", "label": "no launch", "criterion": "No launch of any kind before the adjudication date."},
+        {"id": "D", "label": "residual", "criterion": "Any outcome not covered by A, B, or C."},
     ],
     "indicators": [
-        {"id": "I01", "label": "design document published", "strengthens": {"A": 1.0, "B": -1.0}}
+        {"id": "I01", "label": "design document published", "strengthens": {"A": 1.0, "B": -0.5}},
+        {"id": "I07", "label": "timing synchronized with market window", "strengthens": {"B": 1.0, "A": -0.5}},
     ],
 }
-MARKS = {"marked_on": "2026-07-18", "remark_every_days": 90, "values": {"A": 0.4, "B": 0.6}}
-OBSERVATIONS = [{"indicator": "I01", "observed": "yes", "on": "2026-08-20"}]
-USER_MESSAGE = (
-    "Adjudicate this scenario ledger with the business diagnostic tool as of 2026-09-02. "
+MARKS = {
+    "marked_on": "2026-07-18",
+    "remark_every_days": 90,
+    "values": {"A": 0.15, "B": 0.45, "C": 0.30, "D": 0.10},
+}
+OBSERVATIONS = [{"indicator": "I01", "observed": "yes", "on": "2026-08-20", "source": "ref-12"}]
+OUTCOME = {"resolved_on": "2027-12-31", "scenario": "B"}
+MARKS_HISTORY = [
+    {"marked_on": "2026-04-19", "remark_every_days": 90, "values": {"A": 0.15, "B": 0.40, "C": 0.35, "D": 0.10}},
+    {"marked_on": "2026-01-19", "remark_every_days": 90, "values": {"A": 0.25, "B": 0.25, "C": 0.25, "D": 0.25}},
+]
+ADJUDICATE_USER_MESSAGE = (
+    f"Adjudicate this scenario ledger with the business diagnostic tool as of {AS_OF}. "
     f"framework={FRAMEWORK} marks={MARKS} observations={OBSERVATIONS}"
 )
+CALIBRATE_USER_MESSAGE = (
+    f"The outcome is resolved. Calibrate these marks with the business diagnostic tool as of {AS_OF}. "
+    f"framework={FRAMEWORK} marks={MARKS} outcome={OUTCOME} marks_history={MARKS_HISTORY}"
+)
+
+
+def show_adjudicate(result):
+    # Deltas and fired indicators next to the operator marks, never model_implied alone.
+    for row in result["scenarios"]:
+        print(row["id"], row["operator_mark"], row["model_implied"], row["delta"], row["fired"])
+    print("marks_stale:", result["marks_stale"], "insufficient_data:", result["insufficient_data"])
+
+
+def show_calibrate(result):
+    print("brier:", result["calibration"]["brier"])
+    print("brier_trend:", result["calibration"]["brier_trend"])
 ```
+
+Expected: adjudicate → A 0.307 (+0.157), B 0.314 (−0.136), C 0.284 (−0.016), D 0.095 (−0.005), `fired: ["I01"]` on A and B; calibrate → `brier: 0.425`, `brier_trend` 2026-01-19 0.75 then 2026-04-19 0.515.
+
+### Full loop (adjudicate → calibrate)
+
+Host rules for the two-action loop:
+
+- (a) The host supplies `as_of` on every call; the skill never reads the clock.
+- (b) Stateless: `marks`, `observations`, `marks_history`, and `outcome` travel in the JSON input and come back in the output. Keep the ledger on the host side.
+- (c) Surface `delta` and `fired` next to `operator_mark`. **Never present `model_implied` on its own.**
+- (d) `marks_stale: true` → prompt the operator to re-mark; the host never re-marks for them.
+- (e) `insufficient_data` non-empty → report the reason code; do not substitute, estimate, or backfill.
+- (f) Chain conditions use the top-level booleans `fired_any`, `marks_stale`, and `insufficient`.
+
+The loop is two tool calls. After an observation is recorded, the host sends `ADJUDICATE_USER_MESSAGE`, the model calls the tool with `action: "adjudicate"`, and the host presents `scenarios[]` next to the operator marks. After the outcome resolves, the host sends `CALIBRATE_USER_MESSAGE`, the model calls the tool with `action: "calibrate"` (adding `marks_history` when earlier mark sets exist), and the host reports `calibration["brier"]` and `calibration["brier_trend"]`. Every provider block below runs both calls in sequence.
 
 ### Runnable examples
 
@@ -173,18 +218,23 @@ bundle = SkillLoader.load_skill("monitoring/business_diagnostic")
 skill = bundle["class"]()
 client = genai.Client()
 gemini_tool = SkillLoader.to_gemini_tool(bundle)
-response = client.models.generate_content(
-    model="gemini-2.5-flash-lite",
-    contents=USER_MESSAGE,
-    config=types.GenerateContentConfig(
-        tools=[gemini_tool],
-        system_instruction=bundle["instructions"],
-    ),
+config = types.GenerateContentConfig(
+    tools=[gemini_tool],
+    system_instruction=bundle["instructions"],
 )
-for part in response.candidates[0].content.parts:
-    if part.function_call:
-        result = skill.execute(dict(part.function_call.args))
-        print(result["status"], result["scenarios"])
+
+
+def run_tool_call(user_message, show):
+    response = client.models.generate_content(
+        model="gemini-2.5-flash-lite", contents=user_message, config=config
+    )
+    for part in response.candidates[0].content.parts:
+        if part.function_call:
+            show(skill.execute(dict(part.function_call.args)))
+
+
+run_tool_call(ADJUDICATE_USER_MESSAGE, show_adjudicate)  # after the observation
+run_tool_call(CALIBRATE_USER_MESSAGE, show_calibrate)  # after the outcome resolves
 ```
 
 ### Claude
@@ -201,17 +251,23 @@ bundle = SkillLoader.load_skill("monitoring/business_diagnostic")
 skill = bundle["class"]()
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 tools = [SkillLoader.to_claude_tool(bundle)]
-response = client.messages.create(
-    model="claude-3-5-haiku-latest",
-    max_tokens=1024,
-    system=bundle["instructions"],
-    tools=tools,
-    messages=[{"role": "user", "content": USER_MESSAGE}],
-)
-for block in response.content:
-    if block.type == "tool_use":
-        result = skill.execute(dict(block.input))
-        print(result["status"], result["scenarios"])
+
+
+def run_tool_call(user_message, show):
+    response = client.messages.create(
+        model="claude-3-5-haiku-latest",
+        max_tokens=1024,
+        system=bundle["instructions"],
+        tools=tools,
+        messages=[{"role": "user", "content": user_message}],
+    )
+    for block in response.content:
+        if block.type == "tool_use":
+            show(skill.execute(dict(block.input)))
+
+
+run_tool_call(ADJUDICATE_USER_MESSAGE, show_adjudicate)  # after the observation
+run_tool_call(CALIBRATE_USER_MESSAGE, show_calibrate)  # after the outcome resolves
 ```
 
 ### OpenAI
@@ -229,19 +285,25 @@ bundle = SkillLoader.load_skill("monitoring/business_diagnostic")
 skill = bundle["class"]()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 tool = SkillLoader.to_openai_tool(bundle)
-response = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[
-        {"role": "system", "content": bundle["instructions"]},
-        {"role": "user", "content": USER_MESSAGE},
-    ],
-    tools=[tool],
-)
-message = response.choices[0].message
-if message.tool_calls:
-    args = json.loads(message.tool_calls[0].function.arguments)
-    result = skill.execute(args)
-    print(result["status"], result["scenarios"])
+
+
+def run_tool_call(user_message, show):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": bundle["instructions"]},
+            {"role": "user", "content": user_message},
+        ],
+        tools=[tool],
+    )
+    message = response.choices[0].message
+    if message.tool_calls:
+        args = json.loads(message.tool_calls[0].function.arguments)
+        show(skill.execute(args))
+
+
+run_tool_call(ADJUDICATE_USER_MESSAGE, show_adjudicate)  # after the observation
+run_tool_call(CALIBRATE_USER_MESSAGE, show_calibrate)  # after the outcome resolves
 ```
 
 ### DeepSeek
@@ -262,48 +324,73 @@ client = OpenAI(
     base_url="https://api.deepseek.com",
 )
 tool = SkillLoader.to_deepseek_tool(bundle)
-response = client.chat.completions.create(
-    model="deepseek-chat",
-    messages=[
-        {"role": "system", "content": bundle["instructions"]},
-        {"role": "user", "content": USER_MESSAGE},
-    ],
-    tools=[tool],
-)
-message = response.choices[0].message
-if message.tool_calls:
-    args = json.loads(message.tool_calls[0].function.arguments)
-    result = skill.execute(args)
-    print(result["status"], result["scenarios"])
+
+
+def run_tool_call(user_message, show):
+    response = client.chat.completions.create(
+        model="deepseek-chat",
+        messages=[
+            {"role": "system", "content": bundle["instructions"]},
+            {"role": "user", "content": user_message},
+        ],
+        tools=[tool],
+    )
+    message = response.choices[0].message
+    if message.tool_calls:
+        args = json.loads(message.tool_calls[0].function.arguments)
+        show(skill.execute(args))
+
+
+run_tool_call(ADJUDICATE_USER_MESSAGE, show_adjudicate)  # after the observation
+run_tool_call(CALIBRATE_USER_MESSAGE, show_calibrate)  # after the outcome resolves
 ```
 
 ### Ollama (prompt mode)
 
 ```python
-import json
-
 from skillware.core.loader import SkillLoader
 
 bundle = SkillLoader.load_skill("monitoring/business_diagnostic")
 skill = bundle["class"]()
-prompt = (
-    "You may call tools as JSON blocks.\n"
-    f"Tool: {bundle['manifest']['name']}\n"
-    f"Instructions:\n{bundle['instructions']}\n"
-    f"User: {USER_MESSAGE}"
+
+
+def prompt_for(user_message):
+    return (
+        "You may call tools as JSON blocks.\n"
+        f"Tool: {bundle['manifest']['name']}\n"
+        f"Instructions:\n{bundle['instructions']}\n"
+        f"User: {user_message}"
+    )
+
+
+print(prompt_for(ADJUDICATE_USER_MESSAGE))
+# When the model emits JSON tool args for adjudicate, pass them to execute:
+show_adjudicate(
+    skill.execute(
+        {
+            "action": "adjudicate",
+            "as_of": AS_OF,
+            "framework": FRAMEWORK,
+            "marks": MARKS,
+            "observations": OBSERVATIONS,
+        }
+    )
 )
-print(prompt)
-# When the model emits JSON tool args, pass them to execute:
-result = skill.execute(
-    {
-        "action": "adjudicate",
-        "as_of": "2026-09-02",
-        "framework": FRAMEWORK,
-        "marks": MARKS,
-        "observations": OBSERVATIONS,
-    }
+
+print(prompt_for(CALIBRATE_USER_MESSAGE))
+# After the outcome resolves, the calibrate tool args:
+show_calibrate(
+    skill.execute(
+        {
+            "action": "calibrate",
+            "as_of": AS_OF,
+            "framework": FRAMEWORK,
+            "marks": MARKS,
+            "outcome": OUTCOME,
+            "marks_history": MARKS_HISTORY,
+        }
+    )
 )
-print(json.dumps(result, indent=2))
 ```
 
 ## Limitations (v0.1)
@@ -311,6 +398,7 @@ print(json.dumps(result, indent=2))
 - **No data acquisition**: observations are recorded upstream; the skill never fetches, scrapes, or polls anything.
 - **No estimation**: an unobserved indicator contributes 0; nothing is imputed.
 - **No re-marking**: `marks_stale` prompts the operator; the skill never writes marks.
+- **Operator marks only**: `observations` passed to `calibrate` are validated but not used: Brier scores use operator marks only.
 - **No weight tuning**: `strengthens` weights come from the framework; the skill never adjusts them.
 - One observation per indicator per call; the host de-duplicates before calling.
 

@@ -27,6 +27,17 @@ supplies a resolved `outcome`. It returns the first contract violation
 found, checking in this order: request envelope, action, `as_of`, framework,
 `strengthens` ids, marks, observations, outcome, `marks_history`.
 
+- `observations` passed to `calibrate` are validated but not used: Brier
+  scores use operator marks only.
+- Weights: an indicator observed `yes` adds +w to every scenario listed in
+  its `strengthens`, `no` adds −w; scenarios not listed get 0; indicators
+  without an observation contribute 0 — nothing is imputed.
+- With `exhaustive: false` each scenario updates independently and
+  model-implied values may not sum to 1 (the bundled example with
+  `exhaustive: false`: A 0.324, B 0.332, C 0.300, D 0.100, sum 1.056).
+- Multi-class Brier: `Σ_s (p_s − y_s)²` with one-hot `y` (1 for the
+  resolved scenario, 0 otherwise).
+
 ## Agent-loop contract
 
 - Surface `scenarios[].delta` and `scenarios[].fired` to the operator next to
