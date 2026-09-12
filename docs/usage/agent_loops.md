@@ -48,6 +48,12 @@ OpenAI-compatible hosts reuse `to_openai_tool()`; see the [host guide](openai_co
 
 **Optional param validation:** Some agent-loop examples (e.g. `claude_wallet_check.py`, `gemini_tos_evaluator.py`) call `skill.validate_params(...)` before `execute()`; others call `execute()` directly.
 
+### Multi-turn tool loops
+
+After you return a tool result to the model, **call the model again without a new user message** when it may chain another tool call or write its answer. Only append a user turn when you need input from the person (disambiguation, missing parameters, confirmation).
+
+Repeat until the model stops with natural-language text (not `tool_use` / function calls). If the skill returns `needs_input`, show the user the candidates or `agent_hint`, then continue. Skill-specific playbooks (status envelopes, pipelines, rate limits) live on each [catalog page](../skills/README.md) and in `bundle["instructions"]` — not in this guide.
+
 ---
 
 ## Multi-skill sessions (SkillContext)
@@ -98,12 +104,12 @@ result = ctx.execute(skill_id, arguments)  # auto-prepares; validates if you cal
 | Adapter | Match tool calls using |
 | :--- | :--- |
 | Gemini | `SkillLoader._sanitize_gemini_tool_name(bundle["manifest"]["name"])` (e.g. `compliance_tos_evaluator`) |
-| Claude | `manifest["name"]` (may include slashes, e.g. `compliance/tos_evaluator`) |
+| Claude | `to_claude_tool(bundle)["name"]` (sanitized, e.g. `compliance_tos_evaluator`) |
 | OpenAI | `to_openai_tool(bundle)["function"]["name"]` (sanitized, e.g. `compliance_tos_evaluator`) |
 | DeepSeek | `to_deepseek_tool(bundle)["function"]["name"]` (same sanitization rules) |
 | Ollama (prompt) | `"tool"` field in the JSON block the model emits (same as `manifest["name"]` when the manifest uses the full registry ID) |
 
-**Registry manifest names:** Every bundled skill uses `manifest["name"]` = `category/skill_name` (for example `office/pdf_form_filler`, `defi/evm_tx_handler`). Match tool calls with `bundle["manifest"]["name"]` on Claude, or derive sanitized names from the adapter on Gemini, OpenAI, and DeepSeek (`office_pdf_form_filler`, `defi_evm_tx_handler`). Do not hardcode legacy short names in examples. `SkillLoader.load_skill()` warns when `name` diverges from the folder path for registry-layout skills; use `bundle.get("registry_id")` for the path-derived ID when present.
+**Registry manifest names:** Every bundled skill uses `manifest["name"]` = `category/skill_name` (for example `office/pdf_form_filler`, `defi/evm_tx_handler`). Match tool calls with sanitized adapter names on Gemini, Claude, OpenAI, and DeepSeek (`office_pdf_form_filler`, `optimization_prompt_rewriter`), or compare against `SkillLoader.to_*_tool(bundle)` output rather than hardcoding. Do not hardcode legacy short names in examples. `SkillLoader.load_skill()` warns when `name` diverges from the folder path for registry-layout skills; use `bundle.get("registry_id")` for the path-derived ID when present.
 
 ## Minimal execute (no LLM)
 
@@ -140,6 +146,7 @@ skills in one harness.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `compliance/tos_evaluator` | - | `gemini_tos_evaluator.py` | `claude_tos_evaluator.py` | `openai_tos_evaluator.py` | `deepseek_tos_evaluator.py` | `ollama_tos_evaluator.py` |
 | `finance/wallet_screening` | - | `gemini_wallet_check.py` | `claude_wallet_check.py` | (catalog page) | (catalog page) | `ollama_skills_test.py` (multi-skill) |
+| `office/gmail_handler` | `gmail_handler_demo.py` (local execute) | `gemini_gmail_handler.py` | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
 | `office/pdf_form_filler` | - | `gemini_pdf_form_filler.py` | `claude_pdf_form_filler.py` | (catalog page) | (catalog page) | `ollama_skills_test.py` (multi-skill) |
 | `compliance/mica_module` | - | `mica_rag_flow.py` | `mica_claude_flow.py` | (catalog page) | (catalog page) | `mica_ollama_flow.py` |
 | `compliance/pii_masker` | `pii_guardrail_flow.py` (local execute) | (catalog page) | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
@@ -157,57 +164,7 @@ skills in one harness.
 | `monitoring/token_limiter` | `token_limiter_loop.py` (local execute) | `gemini_token_limiter.py`, `skill_context_gemini_loop.py` (multi-skill) | `claude_token_limiter.py` | (catalog page) | (catalog page) | (catalog page) |
 | `monitoring/kpi_gate` | `kpi_gate_demo.py` (local execute) | (catalog page) | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
 | `monitoring/business_diagnostic` | `business_diagnostic_demo.py` (local execute) | (catalog page) | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
-| `finance/uk_companies_house_handler` | `uk_companies_house_handler_demo.py` | `gemini_uk_companies_house_handler.py` | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
-
-### UK Companies House Handler — pipeline and composites (v2b)
-
-The skill returns status envelopes (`ready`, `partial`, `needs_input`, `error`). Pass **`bundle["instructions"]`** so the model passes **clean** `query` values (not full sentences) and optional `role_hint`. On `needs_input`, show `candidates` and resume with `company_number` / `context`.
-
-**Composite (single intent):**
-
-```python
-result = skill.execute(
-    {
-        "action": "resolve_and_get_officers",
-        "query": "Barclays",
-        "role_hint": "ceo",
-    }
-)
-```
-
-**Multi-step pipeline:**
-
-```python
-intent = skill.execute(
-    {
-        "action": "map_intent",
-        "intent_keywords": "officers, filings",
-        "entities": {"company_query": "BP"},
-    }
-)
-result = skill.execute(
-    {
-        "action": "run_pipeline",
-        "steps": intent["suggested_pipeline"],
-        "context": intent.get("context", {}),
-    }
-)
-```
-
-**Resume after disambiguation:**
-
-```python
-result = skill.execute(
-    {
-        "action": "get_officers",
-        "company_number": "01026167",
-        "role_hint": "ceo",
-        "context": prior_result["context"],
-    }
-)
-```
-
-See [`examples/uk_companies_house_handler_demo.py`](../../examples/uk_companies_house_handler_demo.py) (mocked v2b flows) and [`examples/gemini_uk_companies_house_handler.py`](../../examples/gemini_uk_companies_house_handler.py) (interactive loop).
+| `finance/uk_companies_house_handler` | `uk_companies_house_handler_demo.py` | `gemini_uk_companies_house_handler.py` | `claude_uk_companies_house_handler.py` | (catalog page) | (catalog page) | (catalog page) |
 | `office/gmail_handler` | `gmail_handler_demo.py` (local execute) | `gemini_gmail_handler.py` | (catalog page) | (catalog page) | (catalog page) | (catalog page) |
 
 ### Business Diagnostic, adjudicate → calibrate loop
